@@ -18,751 +18,183 @@
     --text: #e0e0e0;
     --text2: #888;
     --border: rgba(0,255,136,0.15);
-    --glow: 0 0 20px rgba(0,255,136,0.3);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; cursor: none; overflow-x: hidden; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    cursor: none;
-    overflow-x: hidden;
-  }
+  #cursor { width: 12px; height: 12px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); transition: transform 0.1s, background 0.3s; }
+  #cursor-ring { width: 36px; height: 36px; border: 1.5px solid rgba(0,255,136,0.5); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99998; transform: translate(-50%,-50%); transition: all 0.12s ease; }
+  .cursor-trail { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 99997; transform: translate(-50%,-50%); opacity: 0; }
 
-  /* ===== CURSOR ===== */
-  #cursor {
-    width: 12px;
-    height: 12px;
-    background: var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 99999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s, background 0.3s;
-    box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
-  }
+  #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
-  #cursor-ring {
-    width: 36px;
-    height: 36px;
-    border: 1.5px solid rgba(0,255,136,0.5);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 99998;
-    transform: translate(-50%, -50%);
-    transition: all 0.12s ease;
-  }
-
-  .cursor-trail {
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 99997;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
-
-  /* ===== CANVAS BG ===== */
-  #bg-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  /* ===== SCROLLBAR ===== */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
-  /* ===== DISCLAIMER ===== */
-  .disclaimer {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 1000;
-    background: rgba(255,0,100,0.08);
-    border-bottom: 1px solid rgba(255,0,100,0.3);
-    text-align: center;
-    padding: 8px 20px;
-    font-size: 12px;
-    color: #ff6688;
-    letter-spacing: 0.05em;
-    backdrop-filter: blur(10px);
-  }
-
-  .disclaimer span {
-    opacity: 0.6;
-  }
-
-  /* ===== NAV ===== */
-  nav {
-    position: fixed;
-    top: 34px; left: 0; right: 0;
-    z-index: 999;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 40px;
-    background: rgba(0,0,0,0.7);
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(20px);
-  }
-
-  .nav-logo {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    color: var(--accent);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .nav-links a {
-    color: var(--text2);
-    text-decoration: none;
-    font-size: 12px;
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: 1px solid transparent;
-    transition: all 0.3s;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .nav-links a:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: rgba(0,255,136,0.05);
-    box-shadow: 0 0 10px rgba(0,255,136,0.1);
-  }
-
-  /* ===== MAIN WRAPPER ===== */
-  .wrapper {
-    position: relative;
-    z-index: 1;
-    padding-top: 120px;
-  }
-
-  /* ===== HERO ===== */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 40px 20px;
-    position: relative;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0,255,136,0.05);
-    border: 1px solid rgba(0,255,136,0.2);
-    border-radius: 100px;
-    padding: 8px 20px;
-    font-size: 12px;
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.1em;
-    margin-bottom: 40px;
-    animation: fadeInDown 0.8s ease;
-  }
-
-  .hero-badge::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
-  .hero-title {
-    font-size: clamp(36px, 6vw, 80px);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 24px;
-    animation: fadeInUp 0.8s ease 0.2s both;
-  }
-
-  .hero-title .gradient {
-    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-sub {
-    font-size: 16px;
-    color: var(--text2);
-    max-width: 600px;
-    line-height: 1.7;
-    margin-bottom: 50px;
-    animation: fadeInUp 0.8s ease 0.4s both;
-  }
-
-  .hero-btns {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: fadeInUp 0.8s ease 0.6s both;
-  }
-
-  .btn {
-    padding: 14px 32px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: none;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.05em;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 0; height: 0;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-  }
-
-  .btn:hover::before {
-    width: 300px;
-    height: 300px;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #000;
-    border: none;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(0,255,136,0.4);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid rgba(0,255,136,0.4);
-  }
-
-  .btn-secondary:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(0,255,136,0.15);
-    border-color: var(--accent);
-    background: rgba(0,255,136,0.05);
-  }
-
-  /* ===== TOPOLOGY ===== */
-  .topo-section {
-    padding: 80px 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 60px;
-  }
-
-  .section-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .section-title {
-    font-size: clamp(28px, 4vw, 48px);
-    font-weight: 700;
-    margin-bottom: 16px;
-  }
-
-  .section-desc {
-    color: var(--text2);
-    font-size: 15px;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.7;
-  }
-
-  .topo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  .topo-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .topo-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transform: scaleX(0);
-    transition: transform 0.4s;
-  }
-
-  .topo-card:hover::before { transform: scaleX(1); }
-
-  .topo-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(0,255,136,0.3);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0,255,136,0.05);
-  }
-
-  .topo-card-icon {
-    width: 48px;
-    height: 48px;
-    background: rgba(0,255,136,0.08);
-    border: 1px solid rgba(0,255,136,0.2);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    margin-bottom: 16px;
-  }
-
-  .topo-card-name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-
-  .iface-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .iface-list li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text2);
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.02);
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.04);
-    transition: all 0.2s;
-  }
-
-  .iface-list li:hover {
-    background: rgba(0,255,136,0.04);
-    border-color: rgba(0,255,136,0.1);
-    color: var(--text);
-  }
-
-  .iface-num {
-    width: 20px;
-    height: 20px;
-    background: rgba(0,170,255,0.15);
-    color: var(--accent2);
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  /* ===== CONTENT SECTIONS ===== */
-  .content-section {
-    padding: 80px 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-    scroll-margin-top: 120px;
-  }
-
-  .steps-container {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .step-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.3s;
-  }
-
-  .step-card:hover {
-    border-color: rgba(0,255,136,0.25);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-  }
-
-  .step-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 20px 28px;
-    cursor: none;
-    user-select: none;
-    transition: background 0.2s;
-  }
-
-  .step-header:hover {
-    background: rgba(0,255,136,0.03);
-  }
-
-  .step-num {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #000;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .step-title {
-    font-size: 16px;
-    font-weight: 600;
-    flex: 1;
-  }
-
-  .step-toggle {
-    width: 28px;
-    height: 28px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: var(--accent);
-    transition: all 0.3s;
-    flex-shrink: 0;
-  }
-
-  .step-card.open .step-toggle {
-    transform: rotate(180deg);
-    background: rgba(0,255,136,0.1);
-  }
-
-  .step-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .step-card.open .step-body {
-    max-height: 9999px;
-  }
-
-  .step-body-inner {
-    padding: 0 28px 28px;
-  }
-
-  /* ===== DEVICE BLOCK ===== */
-  .device-block {
-    margin-bottom: 24px;
-  }
-
-  .device-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0,170,255,0.08);
-    border: 1px solid rgba(0,170,255,0.2);
-    color: var(--accent2);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    letter-spacing: 0.05em;
-  }
-
-  .device-label::before {
-    content: '▸';
-    color: var(--accent);
-  }
-
-  /* ===== CODE BLOCK ===== */
-  .code-block {
-    position: relative;
-    background: #050508;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-
-  .code-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: rgba(255,255,255,0.02);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-
-  .code-dots {
-    display: flex;
-    gap: 6px;
-  }
-
-  .code-dots span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  .code-dots span:nth-child(1) { background: #ff5f57; }
-  .code-dots span:nth-child(2) { background: #ffbd2e; }
-  .code-dots span:nth-child(3) { background: #28ca41; }
-
-  .copy-btn {
-    background: rgba(0,255,136,0.08);
-    border: 1px solid rgba(0,255,136,0.2);
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    padding: 4px 12px;
-    border-radius: 6px;
-    cursor: none;
-    transition: all 0.3s;
-    letter-spacing: 0.05em;
-  }
-
-  .copy-btn:hover {
-    background: rgba(0,255,136,0.15);
-    box-shadow: 0 0 10px rgba(0,255,136,0.2);
-    transform: scale(1.05);
-  }
-
-  .copy-btn.copied {
-    background: rgba(0,255,136,0.2);
-    color: var(--accent);
-  }
-
-  pre {
-    padding: 20px;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--text);
-  }
-
-  pre .cmd { color: #7dd3fc; }
-  pre .comment { color: #4b5563; font-style: italic; }
-  pre .string { color: #86efac; }
-  pre .keyword { color: #c084fc; }
-  pre .addr { color: #fbbf24; }
-  pre .section { color: #fb923c; font-weight: 600; }
-
-  /* ===== NOTE BOX ===== */
-  .note-box {
-    background: rgba(0,255,136,0.04);
-    border: 1px solid rgba(0,255,136,0.15);
-    border-left: 3px solid var(--accent);
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin: 16px 0;
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.7;
-  }
-
-  .note-box strong {
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ===== DIVIDER ===== */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 60px 0;
-  }
-
-  /* ===== FOOTER ===== */
-  footer {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 60px 40px;
-    border-top: 1px solid var(--border);
-    color: var(--text2);
-    font-size: 13px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ===== ANIMATIONS ===== */
-  @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  /* Reveal on scroll */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ===== PROGRESS BAR ===== */
-  #progress-bar {
-    position: fixed;
-    top: 34px;
-    left: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
-    z-index: 9999;
-    transition: width 0.1s;
-  }
-
-  /* ===== FLOATING CHIPS ===== */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .chip {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid;
-  }
-
+  .disclaimer { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,0,100,0.08); border-bottom: 1px solid rgba(255,0,100,0.3); text-align: center; padding: 8px 20px; font-size: 12px; color: #ff6688; letter-spacing: 0.05em; backdrop-filter: blur(10px); }
+
+  nav { position: fixed; top: 34px; left: 0; right: 0; z-index: 999; display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border); backdrop-filter: blur(20px); flex-wrap: wrap; gap: 8px; }
+  .nav-logo { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 0.1em; white-space: nowrap; }
+  .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav-links a { color: var(--text2); text-decoration: none; font-size: 11px; padding: 5px 10px; border-radius: 6px; border: 1px solid transparent; transition: all 0.3s; font-family: 'JetBrains Mono', monospace; }
+  .nav-links a:hover { color: var(--accent); border-color: var(--accent); background: rgba(0,255,136,0.05); }
+
+  .wrapper { position: relative; z-index: 1; padding-top: 120px; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px 20px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,255,136,0.05); border: 1px solid rgba(0,255,136,0.2); border-radius: 100px; padding: 8px 20px; font-size: 12px; color: var(--accent); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; margin-bottom: 40px; animation: fadeInDown 0.8s ease; }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  .hero-title { font-size: clamp(36px,6vw,80px); font-weight: 800; line-height: 1.1; margin-bottom: 24px; animation: fadeInUp 0.8s ease 0.2s both; }
+  .hero-title .gradient { background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { font-size: 16px; color: var(--text2); max-width: 600px; line-height: 1.7; margin-bottom: 50px; animation: fadeInUp 0.8s ease 0.4s both; }
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; animation: fadeInUp 0.8s ease 0.6s both; }
+
+  .btn { padding: 14px 32px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: none; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); text-decoration: none; position: relative; overflow: hidden; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px; border: none; }
+  .btn::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,255,255,0.1); border-radius: 50%; transform: translate(-50%,-50%); transition: width 0.6s, height 0.6s; }
+  .btn:hover::before { width: 300px; height: 300px; }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(0,255,136,0.4); }
+  .btn-secondary { background: transparent; color: var(--accent); border: 1px solid rgba(0,255,136,0.4) !important; }
+  .btn-secondary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(0,255,136,0.15); background: rgba(0,255,136,0.05); }
+  .btn-accent3 { background: var(--accent3); color: #fff; }
+  .btn-accent3:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(255,0,170,0.4); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid; }
   .chip-green { color: var(--accent); border-color: rgba(0,255,136,0.2); background: rgba(0,255,136,0.05); }
   .chip-blue { color: var(--accent2); border-color: rgba(0,170,255,0.2); background: rgba(0,170,255,0.05); }
   .chip-pink { color: var(--accent3); border-color: rgba(255,0,170,0.2); background: rgba(255,0,170,0.05); }
 
-  /* Search bar */
-  .search-wrap {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 40px;
-  }
+  /* IP CONFIGURATOR */
+  .ip-config-section { padding: 80px 40px; max-width: 1400px; margin: 0 auto; scroll-margin-top: 120px; }
+  .ip-config-panel { background: var(--bg3); border: 1px solid rgba(0,255,136,0.3); border-radius: 20px; padding: 40px; position: relative; overflow: hidden; }
+  .ip-config-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); }
+  .ip-config-title { font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+  .ip-config-desc { color: var(--text2); font-size: 14px; margin-bottom: 32px; line-height: 1.6; }
 
-  .search-input {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    padding: 14px 20px;
-    width: 100%;
-    max-width: 500px;
-    outline: none;
-    transition: all 0.3s;
-  }
+  .ip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .ip-device-card { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 20px; transition: all 0.3s; }
+  .ip-device-card:hover { border-color: rgba(0,255,136,0.2); }
+  .ip-device-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent2); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .ip-device-name::before { content: '▸'; color: var(--accent); }
+  .ip-field { margin-bottom: 10px; }
+  .ip-field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 5px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+  .ip-field input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 9px 12px; outline: none; transition: all 0.3s; }
+  .ip-field input:focus { border-color: rgba(0,255,136,0.4); box-shadow: 0 0 0 3px rgba(0,255,136,0.06); }
+  .ip-field input::placeholder { color: #444; }
 
-  .search-input:focus {
-    border-color: rgba(0,255,136,0.4);
-    box-shadow: 0 0 0 3px rgba(0,255,136,0.05);
-  }
+  .ip-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  .apply-btn { padding: 12px 28px; background: var(--accent); color: #000; border: none; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; cursor: none; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); letter-spacing: 0.05em; }
+  .apply-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 25px rgba(0,255,136,0.4); }
+  .reset-btn { padding: 12px 20px; background: transparent; color: #ff6688; border: 1px solid rgba(255,0,100,0.3); border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 13px; cursor: none; transition: all 0.3s; }
+  .reset-btn:hover { background: rgba(255,0,100,0.08); border-color: rgba(255,0,100,0.5); transform: translateY(-2px); }
+  .status-msg { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); display: none; align-items: center; gap: 6px; }
+  .status-msg.show { display: flex; }
 
+  /* TOPO */
+  .topo-section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px; display: block; }
+  .section-title { font-size: clamp(28px,4vw,48px); font-weight: 700; margin-bottom: 16px; }
+  .section-desc { color: var(--text2); font-size: 15px; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+  .topo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 20px; }
+  .topo-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); position: relative; overflow: hidden; }
+  .topo-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transform: scaleX(0); transition: transform 0.4s; }
+  .topo-card:hover::before { transform: scaleX(1); }
+  .topo-card:hover { transform: translateY(-6px); border-color: rgba(0,255,136,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+  .topo-card-icon { width: 48px; height: 48px; background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+  .topo-card-name { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+  .iface-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .iface-list li { display: flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text2); padding: 8px 12px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); transition: all 0.2s; }
+  .iface-list li:hover { background: rgba(0,255,136,0.04); border-color: rgba(0,255,136,0.1); color: var(--text); }
+  .iface-num { width: 20px; height: 20px; background: rgba(0,170,255,0.15); color: var(--accent2); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+
+  /* CONTENT */
+  .content-section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; scroll-margin-top: 120px; }
+  .steps-container { display: flex; flex-direction: column; gap: 20px; }
+  .step-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: all 0.3s; }
+  .step-card:hover { border-color: rgba(0,255,136,0.25); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .step-header { display: flex; align-items: center; gap: 16px; padding: 20px 28px; cursor: none; user-select: none; transition: background 0.2s; }
+  .step-header:hover { background: rgba(0,255,136,0.03); }
+  .step-num { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #000; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .step-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .step-toggle { width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--accent); transition: all 0.3s; flex-shrink: 0; }
+  .step-card.open .step-toggle { transform: rotate(180deg); background: rgba(0,255,136,0.1); }
+  .step-body { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .step-card.open .step-body { max-height: 99999px; }
+  .step-body-inner { padding: 0 28px 28px; }
+
+  .device-block { margin-bottom: 24px; }
+  .device-label { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,170,255,0.08); border: 1px solid rgba(0,170,255,0.2); color: var(--accent2); font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 8px; margin-bottom: 12px; letter-spacing: 0.05em; }
+  .device-label::before { content: '▸'; color: var(--accent); }
+
+  .code-block { position: relative; background: #050508; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+  .code-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span { width: 10px; height: 10px; border-radius: 50%; }
+  .code-dots span:nth-child(1) { background: #ff5f57; }
+  .code-dots span:nth-child(2) { background: #ffbd2e; }
+  .code-dots span:nth-child(3) { background: #28ca41; }
+  .copy-btn { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 4px 12px; border-radius: 6px; cursor: none; transition: all 0.3s; }
+  .copy-btn:hover { background: rgba(0,255,136,0.15); transform: scale(1.05); }
+  .copy-btn.copied { background: rgba(0,255,136,0.2); }
+
+  pre { padding: 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: var(--text); }
+  pre .cmd { color: #7dd3fc; }
+  pre .comment { color: #4b5563; font-style: italic; }
+  pre .string { color: #86efac; }
+  pre .keyword { color: #c084fc; }
+  pre .ip { color: #fbbf24; font-weight: 600; }
+  pre .section { color: #fb923c; font-weight: 600; }
+
+  /* IP spans в pre */
+  .dyn-ip { color: #fbbf24; font-weight: 700; background: rgba(251,191,36,0.08); border-radius: 3px; padding: 0 2px; transition: all 0.3s; }
+  .dyn-ip.updated { color: #00ff88; background: rgba(0,255,136,0.1); }
+
+  .note-box { background: rgba(0,255,136,0.04); border: 1px solid rgba(0,255,136,0.15); border-left: 3px solid var(--accent); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .note-box strong { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 60px 0; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 60px 40px; border-top: 1px solid var(--border); color: var(--text2); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+
+  #progress-bar { position: fixed; top: 34px; left: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); z-index: 9999; transition: width 0.1s; }
+
+  .search-wrap { display: flex; justify-content: center; margin-bottom: 40px; padding: 0 40px; }
+  .search-input { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 14px; padding: 14px 20px; width: 100%; max-width: 500px; outline: none; transition: all 0.3s; }
+  .search-input:focus { border-color: rgba(0,255,136,0.4); box-shadow: 0 0 0 3px rgba(0,255,136,0.05); }
   .search-input::placeholder { color: var(--text2); }
+
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.8); } }
+
+  /* IP CONFIG highlight */
+  .ip-highlight { animation: ipFlash 0.5s ease; }
+  @keyframes ipFlash { 0% { background: rgba(0,255,136,0.3); } 100% { background: transparent; } }
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
-
-<!-- PROGRESS BAR -->
 <div id="progress-bar"></div>
-
-<!-- ANIMATED BG -->
 <canvas id="bg-canvas"></canvas>
 
-<!-- DISCLAIMER -->
-<div class="disclaimer">
-  ⚠ &nbsp; Данный проект <strong>никак не связан</strong> с <span>@Rexilone</span> &nbsp; ⚠
-</div>
+<div class="disclaimer">⚠ &nbsp; Данный проект <strong>никак не связан</strong> с <span style="opacity:0.6">@Rexilone</span> &nbsp; ⚠</div>
 
-<!-- NAV -->
 <nav>
-  <div class="nav-logo">&gt; NET_MANUAL_v1.0</div>
+  <div class="nav-logo">&gt; NET_MANUAL_v2.0</div>
   <div class="nav-links">
+    <a href="#ipconfig">⚙ IP-Config</a>
     <a href="#topology">Топология</a>
     <a href="#base">Базовые</a>
     <a href="#timezone">Timezone</a>
@@ -786,7 +218,6 @@
   </div>
 </nav>
 
-<!-- WRAPPER -->
 <div class="wrapper">
 
   <!-- HERO -->
@@ -794,16 +225,15 @@
     <div class="hero-badge">МЕТОДИЧЕСКОЕ ПОСОБИЕ · СЕТЕВАЯ ИНФРАСТРУКТУРА</div>
     <h1 class="hero-title">
       <span class="gradient">Сетевая</span><br>Инфраструктура<br>
-      <span style="font-size:0.6em; color: var(--text2); font-weight: 400;">au-team.irpo</span>
+      <span style="font-size:0.55em;color:var(--text2);font-weight:400;">au-team.irpo</span>
     </h1>
-    <p class="hero-sub">
-      Полное руководство по настройке сетевой инфраструктуры: маршрутизация, VPN, OSPF, DNS, DHCP, Samba DC, Docker, Moodle и многое другое.
-    </p>
+    <p class="hero-sub">Полное руководство по настройке сетевой инфраструктуры. Введите свои IP-адреса — все команды обновятся автоматически!</p>
     <div class="hero-btns">
-      <a href="#topology" class="btn btn-primary">⬇ Начать изучение</a>
-      <a href="#base" class="btn btn-secondary">⚡ Быстрый старт</a>
+      <a href="#ipconfig" class="btn btn-accent3">⚙ Настроить IP-адреса</a>
+      <a href="#base" class="btn btn-primary">⬇ Начать изучение</a>
+      <a href="#topology" class="btn btn-secondary">Топология</a>
     </div>
-    <div class="chips" style="justify-content:center; margin-top:40px;">
+    <div class="chips" style="justify-content:center;margin-top:40px;">
       <span class="chip chip-green">GRE Tunnel</span>
       <span class="chip chip-blue">OSPF</span>
       <span class="chip chip-pink">Samba AD</span>
@@ -815,6 +245,151 @@
       <span class="chip chip-pink">Chrony</span>
     </div>
   </section>
+
+  <!-- IP CONFIGURATOR -->
+  <section id="ipconfig" class="ip-config-section reveal">
+    <div class="section-header">
+      <span class="section-tag">// ip configurator</span>
+      <h2 class="section-title">⚙ Настройка IP-адресов</h2>
+      <p class="section-desc">Введите IP-адреса вашей сети — все команды в методичке обновятся автоматически</p>
+    </div>
+    <div class="ip-config-panel">
+      <div class="ip-config-title">&gt; Конфигуратор адресного пространства</div>
+      <p class="ip-config-desc">На экзамене вам могут выдать другие адреса. Заполните поля ниже и нажмите «Применить» — все IP в командах заменятся на ваши значения.</p>
+
+      <div class="ip-grid">
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">ISP</div>
+          <div class="ip-field">
+            <label>eth1 → HQ (ISP-HQ сеть, адрес ISP)</label>
+            <input type="text" id="ip_isp_hq" placeholder="172.16.4.1" value="172.16.4.1">
+          </div>
+          <div class="ip-field">
+            <label>eth2 → BR (ISP-BR сеть, адрес ISP)</label>
+            <input type="text" id="ip_isp_br" placeholder="172.16.5.1" value="172.16.5.1">
+          </div>
+          <div class="ip-field">
+            <label>Маска ISP-HQ сети (prefix)</label>
+            <input type="text" id="mask_isp_hq" placeholder="/28" value="/28">
+          </div>
+          <div class="ip-field">
+            <label>Маска ISP-BR сети (prefix)</label>
+            <input type="text" id="mask_isp_br" placeholder="/28" value="/28">
+          </div>
+        </div>
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">HQ-RTR</div>
+          <div class="ip-field">
+            <label>eth0 (ISP-HQ, адрес HQ-RTR)</label>
+            <input type="text" id="ip_hqrtr_isp" placeholder="172.16.4.2" value="172.16.4.2">
+          </div>
+          <div class="ip-field">
+            <label>eth1.100 — VLAN 100 (HQ-SRV)</label>
+            <input type="text" id="ip_hqrtr_vlan100" placeholder="192.168.1.1" value="192.168.1.1">
+          </div>
+          <div class="ip-field">
+            <label>Маска VLAN 100 (prefix)</label>
+            <input type="text" id="mask_vlan100" placeholder="/26" value="/26">
+          </div>
+          <div class="ip-field">
+            <label>eth1.200 — VLAN 200 (HQ-CLI)</label>
+            <input type="text" id="ip_hqrtr_vlan200" placeholder="192.168.2.1" value="192.168.2.1">
+          </div>
+          <div class="ip-field">
+            <label>Маска VLAN 200 (prefix)</label>
+            <input type="text" id="mask_vlan200" placeholder="/28" value="/28">
+          </div>
+          <div class="ip-field">
+            <label>eth1.999 — VLAN 999 (Mgmt)</label>
+            <input type="text" id="ip_hqrtr_vlan999" placeholder="192.168.3.1" value="192.168.3.1">
+          </div>
+          <div class="ip-field">
+            <label>Маска VLAN 999 (prefix)</label>
+            <input type="text" id="mask_vlan999" placeholder="/29" value="/29">
+          </div>
+        </div>
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">BR-RTR</div>
+          <div class="ip-field">
+            <label>eth0 (ISP-BR, адрес BR-RTR)</label>
+            <input type="text" id="ip_brrtr_isp" placeholder="172.16.5.2" value="172.16.5.2">
+          </div>
+          <div class="ip-field">
+            <label>eth1 — BR-Net (адрес BR-RTR)</label>
+            <input type="text" id="ip_brrtr_lan" placeholder="192.168.4.1" value="192.168.4.1">
+          </div>
+          <div class="ip-field">
+            <label>Маска BR-Net (prefix)</label>
+            <input type="text" id="mask_brnet" placeholder="/27" value="/27">
+          </div>
+        </div>
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">HQ-SRV</div>
+          <div class="ip-field">
+            <label>IP (VLAN 100)</label>
+            <input type="text" id="ip_hqsrv" placeholder="192.168.1.2" value="192.168.1.2">
+          </div>
+        </div>
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">HQ-CLI</div>
+          <div class="ip-field">
+            <label>IP (VLAN 200, статический для DNS)</label>
+            <input type="text" id="ip_hqcli" placeholder="192.168.2.11" value="192.168.2.11">
+          </div>
+        </div>
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">BR-SRV</div>
+          <div class="ip-field">
+            <label>IP (BR-Net)</label>
+            <input type="text" id="ip_brsrv" placeholder="192.168.4.2" value="192.168.4.2">
+          </div>
+        </div>
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">GRE Туннель</div>
+          <div class="ip-field">
+            <label>Адрес туннеля HQ-RTR</label>
+            <input type="text" id="ip_gre_hq" placeholder="10.10.10.1" value="10.10.10.1">
+          </div>
+          <div class="ip-field">
+            <label>Адрес туннеля BR-RTR</label>
+            <input type="text" id="ip_gre_br" placeholder="10.10.10.2" value="10.10.10.2">
+          </div>
+          <div class="ip-field">
+            <label>Маска туннельной сети (prefix)</label>
+            <input type="text" id="mask_gre" placeholder="/30" value="/30">
+          </div>
+        </div>
+
+        <div class="ip-device-card">
+          <div class="ip-device-name">DHCP диапазон</div>
+          <div class="ip-field">
+            <label>Начало диапазона DHCP</label>
+            <input type="text" id="ip_dhcp_start" placeholder="192.168.2.2" value="192.168.2.2">
+          </div>
+          <div class="ip-field">
+            <label>Конец диапазона DHCP</label>
+            <input type="text" id="ip_dhcp_end" placeholder="192.168.2.14" value="192.168.2.14">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ip-actions">
+        <button class="apply-btn" onclick="applyIPs()">⚡ Применить IP-адреса</button>
+        <button class="reset-btn" onclick="resetIPs()">↺ Сбросить к умолчанию</button>
+        <div class="status-msg" id="statusMsg">✓ IP-адреса успешно применены!</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
 
   <!-- TOPOLOGY -->
   <section id="topology" class="topo-section reveal">
@@ -836,43 +411,40 @@
         <div class="topo-card-name">ISP</div>
         <ul class="iface-list">
           <li><span class="iface-num">1</span> NAT (eth0 — DHCP)</li>
-          <li><span class="iface-num">2</span> ISP-HQ (172.16.4.1/28)</li>
-          <li><span class="iface-num">3</span> ISP-BR (172.16.5.1/28)</li>
+          <li><span class="iface-num">2</span> ISP-HQ (<span class="dyn-ip" data-key="ip_isp_hq">172.16.4.1</span><span class="dyn-ip" data-key="mask_isp_hq">/28</span>)</li>
+          <li><span class="iface-num">3</span> ISP-BR (<span class="dyn-ip" data-key="ip_isp_br">172.16.5.1</span><span class="dyn-ip" data-key="mask_isp_br">/28</span>)</li>
         </ul>
       </div>
       <div class="topo-card">
         <div class="topo-card-icon">🖧</div>
         <div class="topo-card-name">HQ-SRV</div>
         <ul class="iface-list">
-          <li><span class="iface-num">1</span> HQ-Net (VLAN 100, 192.168.1.2/26)</li>
+          <li><span class="iface-num">1</span> VLAN 100 (<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>)</li>
         </ul>
       </div>
       <div class="topo-card">
         <div class="topo-card-icon">🔀</div>
         <div class="topo-card-name">HQ-RTR</div>
         <ul class="iface-list">
-          <li><span class="iface-num">1</span> ISP-HQ (172.16.4.2/28)</li>
-          <li><span class="iface-num">2</span> HQ-Net (VLAN 100/200/999)</li>
+          <li><span class="iface-num">1</span> ISP-HQ (<span class="dyn-ip" data-key="ip_hqrtr_isp">172.16.4.2</span>)</li>
+          <li><span class="iface-num">2</span> VLAN100: <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span></li>
+          <li><span class="iface-num">3</span> VLAN200: <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span></li>
+          <li><span class="iface-num">4</span> VLAN999: <span class="dyn-ip" data-key="ip_hqrtr_vlan999">192.168.3.1</span></li>
         </ul>
-        <div class="chips" style="margin-top:10px;">
-          <span class="chip chip-green">192.168.1.0/26</span>
-          <span class="chip chip-blue">192.168.2.0/28</span>
-          <span class="chip chip-pink">192.168.3.0/29</span>
-        </div>
       </div>
       <div class="topo-card">
         <div class="topo-card-icon">🔀</div>
         <div class="topo-card-name">BR-RTR</div>
         <ul class="iface-list">
-          <li><span class="iface-num">1</span> ISP-BR (172.16.5.2/28)</li>
-          <li><span class="iface-num">2</span> BR-Net (192.168.4.1/27)</li>
+          <li><span class="iface-num">1</span> ISP-BR (<span class="dyn-ip" data-key="ip_brrtr_isp">172.16.5.2</span>)</li>
+          <li><span class="iface-num">2</span> BR-Net (<span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span>)</li>
         </ul>
       </div>
       <div class="topo-card">
         <div class="topo-card-icon">🖧</div>
         <div class="topo-card-name">BR-SRV</div>
         <ul class="iface-list">
-          <li><span class="iface-num">1</span> BR-Net (192.168.4.2/27)</li>
+          <li><span class="iface-num">1</span> BR-Net (<span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>)</li>
         </ul>
       </div>
     </div>
@@ -880,7 +452,6 @@
 
   <div class="divider"></div>
 
-  <!-- SEARCH -->
   <div class="search-wrap">
     <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по командам..." oninput="filterSteps()">
   </div>
@@ -892,149 +463,119 @@
       <h2 class="section-title">Базовые настройки</h2>
       <p class="section-desc">Hostname, IP-адреса, сетевые интерфейсы</p>
     </div>
-    <div class="steps-container" id="steps-base">
+    <div class="steps-container">
 
-      <div class="step-card" data-search="hostname hq-cli hq-srv isp hq-rtr br-rtr br-srv interfaces networking">
+      <div class="step-card" data-search="hostname hq-cli hq-srv">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
           <div class="step-title">HQ-CLI & HQ-SRV — Hostname</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-CLI</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>hostnamectl set-hostname hq-cli.au-team.irpo; exec bash</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>hostnamectl set-hostname hq-srv.au-team.irpo; exec bash</pre>
-              </div>
-            </div>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-CLI</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>hostnamectl set-hostname hq-cli.au-team.irpo; exec bash</pre></div>
           </div>
-        </div>
+          <div class="device-block">
+            <div class="device-label">HQ-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>hostnamectl set-hostname hq-srv.au-team.irpo; exec bash</pre></div>
+          </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="isp interfaces eth0 dhcp eth1 eth2 172.16.4 172.16.5 networking">
+      <div class="step-card" data-search="isp interfaces eth0 dhcp eth1 eth2 networking">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">2</div>
           <div class="step-title">ISP — Настройка интерфейсов</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">ISP</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>hostnamectl set-hostname isp; exec bash
-nano /etc/network/interfaces</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="keyword">auto</span> eth0
-    iface eth0 <span class="keyword">inet</span> dhcp
-<span class="keyword">auto</span> eth1
-    iface eth1 <span class="keyword">inet</span> static
-    address <span class="addr">172.16.4.1/28</span>
-<span class="keyword">auto</span> eth2
-    iface eth2 <span class="keyword">inet</span> static
-    address <span class="addr">172.16.5.1/28</span></pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl restart networking
-ip -c a</pre>
-              </div>
-            </div>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">ISP</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>hostnamectl set-hostname isp; exec bash
+nano /etc/network/interfaces</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>auto eth0
+    iface eth0 inet dhcp
+auto eth1
+    iface eth1 inet static
+    address <span class="dyn-ip" data-key="ip_isp_hq">172.16.4.1</span><span class="dyn-ip" data-key="mask_isp_hq">/28</span>
+auto eth2
+    iface eth2 inet static
+    address <span class="dyn-ip" data-key="ip_isp_br">172.16.5.1</span><span class="dyn-ip" data-key="mask_isp_br">/28</span></pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl restart networking
+ip -c a</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="hq-rtr interfaces vlan 100 200 999 192.168.1 192.168.2 192.168.3 eth1">
+      <div class="step-card" data-search="hq-rtr interfaces vlan 100 200 999 networking">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">3</div>
           <div class="step-title">HQ-RTR — Настройка интерфейсов + VLAN</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>hostnamectl set-hostname hq-rtr.au-team.irpo; exec bash
-nano /etc/network/interfaces</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="keyword">auto</span> eth0
-    iface eth0 <span class="keyword">inet</span> static
-    address <span class="addr">172.16.4.2/28</span>
-    gateway <span class="addr">172.16.4.1</span>
-<span class="keyword">auto</span> eth1
-    iface eth1 <span class="keyword">inet</span> manual
-<span class="keyword">auto</span> eth1.100
-    iface eth1.100 <span class="keyword">inet</span> static
-    address <span class="addr">192.168.1.1/26</span>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>hostnamectl set-hostname hq-rtr.au-team.irpo; exec bash
+nano /etc/network/interfaces</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>auto eth0
+    iface eth0 inet static
+    address <span class="dyn-ip" data-key="ip_hqrtr_isp">172.16.4.2</span><span class="dyn-ip" data-key="mask_isp_hq">/28</span>
+    gateway <span class="dyn-ip" data-key="ip_isp_hq">172.16.4.1</span>
+auto eth1
+    iface eth1 inet manual
+auto eth1.100
+    iface eth1.100 inet static
+    address <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span><span class="dyn-ip" data-key="mask_vlan100">/26</span>
     vlan-raw-device eth1
-<span class="keyword">auto</span> eth1.200
-    iface eth1.200 <span class="keyword">inet</span> static
-    address <span class="addr">192.168.2.1/28</span>
+auto eth1.200
+    iface eth1.200 inet static
+    address <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span><span class="dyn-ip" data-key="mask_vlan200">/28</span>
     vlan-raw-device eth1
-<span class="keyword">auto</span> eth1.999
-    iface eth1.999 <span class="keyword">inet</span> static
-    address <span class="addr">192.168.3.1/29</span>
-    vlan-raw-device eth1</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl restart networking
-ip -c a</pre>
-              </div>
-            </div>
+auto eth1.999
+    iface eth1.999 inet static
+    address <span class="dyn-ip" data-key="ip_hqrtr_vlan999">192.168.3.1</span><span class="dyn-ip" data-key="mask_vlan999">/29</span>
+    vlan-raw-device eth1</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl restart networking
+ip -c a</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="br-rtr interfaces 172.16.5 192.168.4 eth0 eth1 networking">
+      <div class="step-card" data-search="br-rtr interfaces networking">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">4</div>
           <div class="step-title">BR-RTR — Настройка интерфейсов</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>hostnamectl set-hostname br-rtr.au-team.irpo; exec bash
-nano /etc/network/interfaces</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="keyword">auto</span> eth0
-    iface eth0 <span class="keyword">inet</span> static
-    address <span class="addr">172.16.5.2/28</span>
-    gateway <span class="addr">172.16.5.1</span>
-<span class="keyword">auto</span> eth1
-    iface eth1 <span class="keyword">inet</span> static
-    address <span class="addr">192.168.4.1/27</span></pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl restart networking
-ip -c a</pre>
-              </div>
-            </div>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>hostnamectl set-hostname br-rtr.au-team.irpo; exec bash
+nano /etc/network/interfaces</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>auto eth0
+    iface eth0 inet static
+    address <span class="dyn-ip" data-key="ip_brrtr_isp">172.16.5.2</span><span class="dyn-ip" data-key="mask_isp_br">/28</span>
+    gateway <span class="dyn-ip" data-key="ip_isp_br">172.16.5.1</span>
+auto eth1
+    iface eth1 inet static
+    address <span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span><span class="dyn-ip" data-key="mask_brnet">/27</span></pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl restart networking
+ip -c a</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
       <div class="step-card" data-search="br-srv altlinux vim options ipv4address ipv4route enp0s3 network">
@@ -1043,40 +584,29 @@ ip -c a</pre>
           <div class="step-title">BR-SRV — Настройка (Alt Linux)</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>hostnamectl set-hostname br-srv.au-team.irpo; exec bash
-ip -c a</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/net/ifaces/enp0s3/options</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>TYPE=eth
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>hostnamectl set-hostname br-srv.au-team.irpo; exec bash
+ip -c a
+vim /etc/net/ifaces/enp0s3/options</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>TYPE=eth
 DISABLED=no
 BOOTPROTO=static
-NM_CONTROLLED=no</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/net/ifaces/enp0s3/ipv4address
-<span class="addr">192.168.4.2/27</span>
+NM_CONTROLLED=no</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/net/ifaces/enp0s3/ipv4address
+<span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span><span class="dyn-ip" data-key="mask_brnet">/27</span>
 
 vim /etc/net/ifaces/enp0s3/ipv4route
-default via <span class="addr">192.168.4.1</span>
+default via <span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span>
 
 systemctl restart network
-ip -c a</pre>
-              </div>
-            </div>
+ip -c a</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
     </div>
@@ -1089,25 +619,20 @@ ip -c a</pre>
     <div class="section-header">
       <span class="section-tag">// задание 2</span>
       <h2 class="section-title">Настройка часового пояса</h2>
-      <p class="section-desc">Установка Asia/Yekaterinburg на всех устройствах</p>
     </div>
     <div class="steps-container">
-      <div class="step-card" data-search="timezone timedatectl yekaterinburg asia">
+      <div class="step-card" data-search="timezone timedatectl yekaterinburg">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">Все устройства — Timezone</div>
+          <div class="step-title">Все устройства — Asia/Yekaterinburg</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="note-box"><strong>Применяется на:</strong> HQ-CLI, ISP, HQ-SRV, HQ-RTR, BR-RTR, BR-SRV</div>
-            <div class="code-block">
-              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-              <pre>timedatectl set-timezone Asia/Yekaterinburg
-timedatectl status</pre>
-            </div>
-          </div>
-        </div>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="note-box"><strong>Применяется на:</strong> HQ-CLI, ISP, HQ-SRV, HQ-RTR, BR-RTR, BR-SRV</div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>timedatectl set-timezone Asia/Yekaterinburg
+timedatectl status</pre></div>
+        </div></div>
       </div>
     </div>
   </section>
@@ -1119,28 +644,23 @@ timedatectl status</pre>
     <div class="section-header">
       <span class="section-tag">// задание 3</span>
       <h2 class="section-title">Настройка IP Forwarding</h2>
-      <p class="section-desc">Включение пересылки пакетов между интерфейсами</p>
     </div>
     <div class="steps-container">
-      <div class="step-card" data-search="forward sysctl ip_forward isp hq-rtr br-rtr">
+      <div class="step-card" data-search="forward sysctl ip_forward">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">ISP, HQ-RTR, BR-RTR — IP Forward</div>
+          <div class="step-title">ISP, HQ-RTR, BR-RTR — ip_forward</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="note-box"><strong>Применяется на:</strong> ISP, HQ-RTR, BR-RTR</div>
-            <div class="code-block">
-              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-              <pre>nano /etc/sysctl.conf
+        <div class="step-body"><div class="step-body-inner">
+          <div class="note-box"><strong>Применяется на:</strong> ISP, HQ-RTR, BR-RTR</div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>nano /etc/sysctl.conf
 <span class="comment"># Добавить строку:</span>
 net.ipv4.ip_forward=1
 
-sysctl -p</pre>
-            </div>
-          </div>
-        </div>
+sysctl -p</pre></div>
+        </div></div>
       </div>
     </div>
   </section>
@@ -1152,86 +672,73 @@ sysctl -p</pre>
     <div class="section-header">
       <span class="section-tag">// задание 4</span>
       <h2 class="section-title">Настройка NAT</h2>
-      <p class="section-desc">Masquerade правила и сохранение через crontab</p>
     </div>
     <div class="steps-container">
 
-      <div class="step-card" data-search="nat iptables masquerade isp postrouting 172.16 crontab">
+      <div class="step-card" data-search="nat iptables masquerade isp postrouting crontab">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">ISP — NAT</div>
+          <div class="step-title">ISP — NAT (Masquerade)</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">ISP</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>iptables -t nat -A POSTROUTING -s <span class="addr">172.16.4.0/28</span> -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s <span class="addr">172.16.5.0/28</span> -o eth0 -j MASQUERADE
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">ISP</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>iptables -t nat -A POSTROUTING -s <span class="dyn-ip" data-key="ip_hqrtr_isp">172.16.4.2</span><span class="dyn-ip" data-key="mask_isp_hq">/28</span> -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s <span class="dyn-ip" data-key="ip_brrtr_isp">172.16.5.2</span><span class="dyn-ip" data-key="mask_isp_br">/28</span> -o eth0 -j MASQUERADE
 iptables -t nat -L
 iptables-save > /root/rules
 export EDITOR=nano
 crontab -e
 <span class="comment"># Добавить:</span>
-@reboot /sbin/iptables-restore &lt; /root/rules</pre>
-              </div>
-            </div>
+@reboot /sbin/iptables-restore &lt; /root/rules</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="nat iptables masquerade hq-rtr postrouting 192.168.1 192.168.2 192.168.3 crontab">
+      <div class="step-card" data-search="nat iptables masquerade hq-rtr postrouting crontab">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">2</div>
           <div class="step-title">HQ-RTR — NAT</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>iptables -t nat -A POSTROUTING -s <span class="addr">192.168.1.0/26</span> -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s <span class="addr">192.168.2.0/28</span> -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s <span class="addr">192.168.3.0/29</span> -o eth0 -j MASQUERADE
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>iptables -t nat -A POSTROUTING -s <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span><span class="dyn-ip" data-key="mask_vlan100">/26</span> -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span><span class="dyn-ip" data-key="mask_vlan200">/28</span> -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s <span class="dyn-ip" data-key="ip_hqrtr_vlan999">192.168.3.1</span><span class="dyn-ip" data-key="mask_vlan999">/29</span> -o eth0 -j MASQUERADE
 iptables -t nat -L
 iptables-save > /root/rules
 export EDITOR=nano
 crontab -e
 <span class="comment"># Добавить:</span>
-@reboot /sbin/iptables-restore &lt; /root/rules</pre>
-              </div>
-            </div>
+@reboot /sbin/iptables-restore &lt; /root/rules</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="nat iptables masquerade br-rtr postrouting 192.168.4 crontab">
+      <div class="step-card" data-search="nat iptables masquerade br-rtr postrouting crontab">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">3</div>
           <div class="step-title">BR-RTR — NAT</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>iptables -t nat -A POSTROUTING -s <span class="addr">192.168.4.0/27</span> -o eth0 -j MASQUERADE
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>iptables -t nat -A POSTROUTING -s <span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span><span class="dyn-ip" data-key="mask_brnet">/27</span> -o eth0 -j MASQUERADE
 iptables -t nat -L
 iptables-save > /root/rules
 export EDITOR=nano
 crontab -e
 <span class="comment"># Добавить:</span>
-@reboot /sbin/iptables-restore &lt; /root/rules</pre>
-              </div>
-            </div>
+@reboot /sbin/iptables-restore &lt; /root/rules</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
     </div>
@@ -1244,82 +751,65 @@ crontab -e
     <div class="section-header">
       <span class="section-tag">// задание 5</span>
       <h2 class="section-title">Настройка VLAN</h2>
-      <p class="section-desc">HQ-SRV (VLAN 100) и HQ-CLI (VLAN 200)</p>
     </div>
     <div class="steps-container">
 
-      <div class="step-card" data-search="vlan hq-srv enp0s3.100 100 192.168.1.2 options ipv4address">
+      <div class="step-card" data-search="vlan hq-srv enp0s3.100 options ipv4address">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
           <div class="step-title">HQ-SRV — VLAN 100</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>mkdir /etc/net/ifaces/enp0s3.100
-vim /etc/net/ifaces/enp0s3.100/options</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>TYPE=vlan
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>mkdir /etc/net/ifaces/enp0s3.100
+vim /etc/net/ifaces/enp0s3.100/options</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>TYPE=vlan
 HOST=enp0s3
 VID=100
 DISABLED=no
-BOOTPROTO=static</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/net/ifaces/enp0s3.100/ipv4address
-<span class="addr">192.168.1.2/26</span>
+BOOTPROTO=static</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/net/ifaces/enp0s3.100/ipv4address
+<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span><span class="dyn-ip" data-key="mask_vlan100">/26</span>
 
 vim /etc/net/ifaces/enp0s3.100/ipv4route
-default via <span class="addr">192.168.1.1</span>
+default via <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span>
 
 systemctl restart network
 ip -c a
-ping <span class="addr">192.168.1.1</span></pre>
-              </div>
-            </div>
+ping <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span></pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="vlan hq-cli enp0s3.200 200 192.168.2 options dhcp">
+      <div class="step-card" data-search="vlan hq-cli enp0s3.200 options dhcp">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">2</div>
           <div class="step-title">HQ-CLI — VLAN 200</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-CLI</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>mkdir /etc/net/ifaces/enp0s3.200
-vim /etc/net/ifaces/enp0s3.200/options</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>TYPE=vlan
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-CLI</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>mkdir /etc/net/ifaces/enp0s3.200
+vim /etc/net/ifaces/enp0s3.200/options</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>TYPE=vlan
 VID=200
 HOST=enp0s3
 DISABLED=no
-BOOTPROTO=dhcp</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl restart network
+BOOTPROTO=dhcp</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl restart network
 ip -c a
-ping <span class="addr">192.168.2.1</span></pre>
-              </div>
-            </div>
+ping <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span></pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
     </div>
@@ -1332,71 +822,62 @@ ping <span class="addr">192.168.2.1</span></pre>
     <div class="section-header">
       <span class="section-tag">// задание 6</span>
       <h2 class="section-title">Настройка GRE-туннеля</h2>
-      <p class="section-desc">IP-туннель между HQ-RTR и BR-RTR</p>
     </div>
     <div class="steps-container">
 
-      <div class="step-card" data-search="gre tunnel hq-rtr gre1 10.10.10.1 172.16.4.2 172.16.5.2">
+      <div class="step-card" data-search="gre tunnel hq-rtr gre1">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
           <div class="step-title">HQ-RTR — GRE Туннель</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>nano /etc/network/interfaces
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>nano /etc/network/interfaces
 <span class="comment"># Добавить:</span>
-<span class="keyword">auto</span> gre1
-iface gre1 <span class="keyword">inet</span> tunnel
-    address <span class="addr">10.10.10.1</span>
-    netmask <span class="addr">255.255.255.252</span>
+auto gre1
+iface gre1 inet tunnel
+    address <span class="dyn-ip" data-key="ip_gre_hq">10.10.10.1</span>
+    netmask 255.255.255.252
     mode gre
-    local <span class="addr">172.16.4.2</span>
-    endpoint <span class="addr">172.16.5.2</span>
+    local <span class="dyn-ip" data-key="ip_hqrtr_isp">172.16.4.2</span>
+    endpoint <span class="dyn-ip" data-key="ip_brrtr_isp">172.16.5.2</span>
     ttl 255
 
 systemctl restart networking
-ip -c a</pre>
-              </div>
-            </div>
+ip -c a</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="gre tunnel br-rtr gre1 10.10.10.2 172.16.5.2 172.16.4.2">
+      <div class="step-card" data-search="gre tunnel br-rtr gre1">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">2</div>
           <div class="step-title">BR-RTR — GRE Туннель</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>nano /etc/network/interfaces
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>nano /etc/network/interfaces
 <span class="comment"># Добавить:</span>
-<span class="keyword">auto</span> gre1
-iface gre1 <span class="keyword">inet</span> tunnel
-    address <span class="addr">10.10.10.2</span>
-    netmask <span class="addr">255.255.255.252</span>
+auto gre1
+iface gre1 inet tunnel
+    address <span class="dyn-ip" data-key="ip_gre_br">10.10.10.2</span>
+    netmask 255.255.255.252
     mode gre
-    local <span class="addr">172.16.5.2</span>
-    endpoint <span class="addr">172.16.4.2</span>
+    local <span class="dyn-ip" data-key="ip_brrtr_isp">172.16.5.2</span>
+    endpoint <span class="dyn-ip" data-key="ip_hqrtr_isp">172.16.4.2</span>
     ttl 255
 
 systemctl restart networking
 ip -c a
-ping <span class="addr">10.10.10.1</span></pre>
-              </div>
-            </div>
+ping <span class="dyn-ip" data-key="ip_gre_hq">10.10.10.1</span></pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
     </div>
@@ -1409,123 +890,93 @@ ping <span class="addr">10.10.10.1</span></pre>
     <div class="section-header">
       <span class="section-tag">// задание 7</span>
       <h2 class="section-title">Настройка OSPF</h2>
-      <p class="section-desc">Динамическая маршрутизация через FRR + MD5 аутентификация</p>
     </div>
     <div class="steps-container">
 
-      <div class="step-card" data-search="ospf frr hq-rtr vtysh area network 10.10.10 192.168 md5 password">
+      <div class="step-card" data-search="ospf frr hq-rtr vtysh area network md5 password">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-RTR — Установка FRR и настройка OSPF</div>
+          <div class="step-title">HQ-RTR — FRR + OSPF</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="comment"># Временно включить репозиторий</span>
-nano /etc/apt/sources.list
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>nano /etc/apt/sources.list
 <span class="comment"># Добавить:</span>
-deb [trusted=yes] http://deb.debian.org/debian buster main
-
-nano /etc/resolv.conf
-nameserver 8.8.8.8
-
-apt update
-apt install frr -y</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>nano /etc/frr/daemons
-<span class="comment"># Изменить:</span>
-ospfd=yes
-
-systemctl restart frr</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vtysh
-conf t
-router ospf
-network <span class="addr">10.10.10.0/30</span> area 0
-network <span class="addr">192.168.1.0/26</span> area 0
-network <span class="addr">192.168.2.0/28</span> area 0
-network <span class="addr">192.168.3.0/29</span> area 0
-do wr mem</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="comment"># MD5 аутентификация на туннеле</span>
-vtysh
-conf t
-int gre1
-ip ospf authentication message-digest
-ip ospf message-digest-key 1 md5 <span class="string">P@ssw0rd</span>
-do wr mem</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="comment"># Отключить временный репозиторий</span>
-nano /etc/apt/sources.list
-<span class="comment"># Закомментировать:</span>
-#deb [trusted=yes] http://deb.debian.org/debian buster main</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="step-card" data-search="ospf frr br-rtr vtysh area network 10.10.10 192.168.4 md5 neighbor">
-        <div class="step-header" onclick="toggleStep(this)">
-          <div class="step-num">2</div>
-          <div class="step-title">BR-RTR — Установка FRR и настройка OSPF</div>
-          <div class="step-toggle">▼</div>
-        </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>nano /etc/apt/sources.list
 deb [trusted=yes] http://deb.debian.org/debian buster main
 nano /etc/resolv.conf
 nameserver 8.8.8.8
 apt update && apt install frr -y
 nano /etc/frr/daemons
 ospfd=yes
-systemctl restart frr</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vtysh
+systemctl restart frr</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vtysh
 conf t
 router ospf
-network <span class="addr">10.10.10.0/30</span> area 0
-network <span class="addr">192.168.4.0/27</span> area 0
+network <span class="dyn-ip" data-key="ip_gre_hq">10.10.10.1</span><span class="dyn-ip" data-key="mask_gre">/30</span> area 0
+network <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span><span class="dyn-ip" data-key="mask_vlan100">/26</span> area 0
+network <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span><span class="dyn-ip" data-key="mask_vlan200">/28</span> area 0
+network <span class="dyn-ip" data-key="ip_hqrtr_vlan999">192.168.3.1</span><span class="dyn-ip" data-key="mask_vlan999">/29</span> area 0
+do wr mem</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vtysh
+conf t
+int gre1
+ip ospf authentication message-digest
+ip ospf message-digest-key 1 md5 P@ssw0rd
+do wr mem
+
+<span class="comment"># Отключить временный репо:</span>
+nano /etc/apt/sources.list
+#deb [trusted=yes] http://deb.debian.org/debian buster main</pre></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="step-card" data-search="ospf frr br-rtr vtysh area network md5 neighbor">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num">2</div>
+          <div class="step-title">BR-RTR — FRR + OSPF</div>
+          <div class="step-toggle">▼</div>
+        </div>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>nano /etc/apt/sources.list
+deb [trusted=yes] http://deb.debian.org/debian buster main
+nano /etc/resolv.conf
+nameserver 8.8.8.8
+apt update && apt install frr -y
+nano /etc/frr/daemons
+ospfd=yes
+systemctl restart frr</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vtysh
+conf t
+router ospf
+network <span class="dyn-ip" data-key="ip_gre_hq">10.10.10.1</span><span class="dyn-ip" data-key="mask_gre">/30</span> area 0
+network <span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span><span class="dyn-ip" data-key="mask_brnet">/27</span> area 0
 do wr mem
 
 conf t
 int gre1
 ip ospf authentication message-digest
-ip ospf message-digest-key 1 md5 <span class="string">P@ssw0rd</span>
+ip ospf message-digest-key 1 md5 P@ssw0rd
 do wr mem
 
-do show ip ospf neighbor</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-SRV (проверка)</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>ping <span class="addr">192.168.4.2</span>
-traceroute <span class="addr">192.168.4.2</span></pre>
-              </div>
-            </div>
+do show ip ospf neighbor</pre></div>
           </div>
-        </div>
+          <div class="device-block">
+            <div class="device-label">HQ-SRV (проверка)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>ping <span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>
+traceroute <span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span></pre></div>
+          </div>
+        </div></div>
       </div>
 
     </div>
@@ -1538,50 +989,38 @@ traceroute <span class="addr">192.168.4.2</span></pre>
     <div class="section-header">
       <span class="section-tag">// задание 8</span>
       <h2 class="section-title">Настройка DHCP</h2>
-      <p class="section-desc">dnsmasq как DHCP-сервер для VLAN 200</p>
     </div>
     <div class="steps-container">
-      <div class="step-card" data-search="dhcp dnsmasq hq-rtr 192.168.2 eth1.200 option interface">
+      <div class="step-card" data-search="dhcp dnsmasq hq-rtr interface option">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-RTR — dnsmasq DHCP</div>
+          <div class="step-title">HQ-RTR — dnsmasq DHCP для VLAN 200</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt update
-apt install dnsmasq
-nano /etc/dnsmasq.conf</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>no-resolv
-dhcp-range=<span class="addr">192.168.2.2</span>,<span class="addr">192.168.2.14</span>,9999h
-dhcp-option=3,<span class="addr">192.168.2.1</span>
-dhcp-option=6,<span class="addr">192.168.1.2</span>
-interface=eth1.200</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl restart dnsmasq
-systemctl status dnsmasq</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-CLI (проверка)</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl restart network
-ip -c a
-ping <span class="addr">192.168.2.1</span></pre>
-              </div>
-            </div>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt update && apt install dnsmasq
+nano /etc/dnsmasq.conf</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>no-resolv
+dhcp-range=<span class="dyn-ip" data-key="ip_dhcp_start">192.168.2.2</span>,<span class="dyn-ip" data-key="ip_dhcp_end">192.168.2.14</span>,9999h
+dhcp-option=3,<span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span>
+dhcp-option=6,<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>
+interface=eth1.200</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl restart dnsmasq
+systemctl status dnsmasq</pre></div>
           </div>
-        </div>
+          <div class="device-block">
+            <div class="device-label">HQ-CLI (проверка)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl restart network
+ip -c a
+ping <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span></pre></div>
+          </div>
+        </div></div>
       </div>
     </div>
   </section>
@@ -1593,75 +1032,60 @@ ping <span class="addr">192.168.2.1</span></pre>
     <div class="section-header">
       <span class="section-tag">// задание 9</span>
       <h2 class="section-title">Настройка DNS</h2>
-      <p class="section-desc">dnsmasq как DNS-сервер с записями A, PTR, CNAME</p>
     </div>
     <div class="steps-container">
-      <div class="step-card" data-search="dns dnsmasq hq-srv address ptr cname au-team.irpo 8.8.8.8 bind">
+      <div class="step-card" data-search="dns dnsmasq hq-srv address ptr cname au-team.irpo bind">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-SRV — Настройка DNS</div>
+          <div class="step-title">HQ-SRV — dnsmasq DNS-сервер</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl disable --now bind
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl disable --now bind
 vim /etc/resolv.conf
 nameserver 8.8.8.8
-
-apt-get update
-apt-get install dnsmasq
-systemctl enable --now dnsmasq</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/dnsmasq.conf</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>no-resolv
+apt-get update && apt-get install dnsmasq
+systemctl enable --now dnsmasq</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/dnsmasq.conf</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>no-resolv
 domain=au-team.irpo
 server=8.8.8.8
 interface=*
 
-address=/hq-rtr.au-team.irpo/<span class="addr">192.168.1.1</span>
+address=/hq-rtr.au-team.irpo/<span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span>
 ptr-record=1.1.168.192.in-addr.arpa,hq-rtr.au-team.irpo
 cname=moodle.au-team.irpo,hq-rtr.au-team.irpo
 cname=wiki.au-team.irpo,hq-rtr.au-team.irpo
 
-address=/br-rtr.au-team.irpo/<span class="addr">192.168.4.1</span>
+address=/br-rtr.au-team.irpo/<span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span>
 
-address=/hq-srv.au-team.irpo/<span class="addr">192.168.1.2</span>
+address=/hq-srv.au-team.irpo/<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>
 ptr-record=2.1.168.192.in-addr.arpa,hq-srv.au-team.irpo
 
-address=/hq-cli.au-team.irpo/<span class="addr">192.168.2.11</span>
+address=/hq-cli.au-team.irpo/<span class="dyn-ip" data-key="ip_hqcli">192.168.2.11</span>
 ptr-record=11.2.168.192.in-addr.arpa,hq-cli.au-team.irpo
 
-address=/br-srv.au-team.irpo/<span class="addr">192.168.4.2</span></pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/hosts
-<span class="addr">192.168.1.1</span>  hq-rtr.au-team.irpo
+address=/br-srv.au-team.irpo/<span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span></pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/hosts
+<span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span>  hq-rtr.au-team.irpo
 
-systemctl restart dnsmasq</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-CLI (проверка)</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>ping google.com
+systemctl restart dnsmasq</pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">HQ-CLI (проверка)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>ping google.com
 ping hq-rtr.au-team.irpo
 dig moodle.au-team.irpo
-dig wiki.au-team.irpo</pre>
-              </div>
-            </div>
+dig wiki.au-team.irpo</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
     </div>
   </section>
@@ -1673,59 +1097,44 @@ dig wiki.au-team.irpo</pre>
     <div class="section-header">
       <span class="section-tag">// задание 10</span>
       <h2 class="section-title">Локальные учётные записи</h2>
-      <p class="section-desc">Создание пользователей sshuser и net_admin</p>
     </div>
     <div class="steps-container">
-
-      <div class="step-card" data-search="useradd sshuser 1010 passwd sudoers wheel hq-srv br-srv">
+      <div class="step-card" data-search="useradd sshuser 1010 passwd sudoers wheel">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-SRV & BR-SRV — sshuser</div>
+          <div class="step-title">HQ-SRV & BR-SRV — пользователь sshuser</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="note-box"><strong>Применяется на:</strong> HQ-SRV и BR-SRV</div>
-            <div class="code-block">
-              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-              <pre>useradd sshuser -u 1010
+        <div class="step-body"><div class="step-body-inner">
+          <div class="note-box"><strong>Применяется на:</strong> HQ-SRV и BR-SRV</div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>useradd sshuser -u 1010
 passwd sshuser
 <span class="comment"># Пароль: P@ssw0rd</span>
-
 vim /etc/sudoers
-<span class="comment"># Добавить строку:</span>
+<span class="comment"># Добавить:</span>
 WHEEL_USERS ALL=(ALL:ALL) NOPASSWD: ALL
-
 usermod -aG wheel sshuser
-id sshuser</pre>
-            </div>
-          </div>
-        </div>
+id sshuser</pre></div>
+        </div></div>
       </div>
-
       <div class="step-card" data-search="useradd net_admin passwd sudoers hq-rtr br-rtr nopasswd">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">2</div>
-          <div class="step-title">HQ-RTR & BR-RTR — net_admin</div>
+          <div class="step-title">HQ-RTR & BR-RTR — пользователь net_admin</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="note-box"><strong>Применяется на:</strong> HQ-RTR и BR-RTR</div>
-            <div class="code-block">
-              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-              <pre>useradd net_admin -m
+        <div class="step-body"><div class="step-body-inner">
+          <div class="note-box"><strong>Применяется на:</strong> HQ-RTR и BR-RTR</div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>useradd net_admin -m
 passwd net_admin
 <span class="comment"># Пароль: P@$$word</span>
-
 nano /etc/sudoers
-<span class="comment"># Добавить строку:</span>
-net_admin  ALL=(ALL:ALL) NOPASSWD: ALL</pre>
-            </div>
-          </div>
-        </div>
+<span class="comment"># Добавить:</span>
+net_admin  ALL=(ALL:ALL) NOPASSWD: ALL</pre></div>
+        </div></div>
       </div>
-
     </div>
   </section>
 
@@ -1736,49 +1145,37 @@ net_admin  ALL=(ALL:ALL) NOPASSWD: ALL</pre>
     <div class="section-header">
       <span class="section-tag">// задание 11</span>
       <h2 class="section-title">Настройка SSH</h2>
-      <p class="section-desc">Порт 2024, MaxAuthTries 2, баннер, ограничение пользователей</p>
     </div>
     <div class="steps-container">
-      <div class="step-card" data-search="ssh sshd port 2024 maxauthtries banner allowusers permitrootlogin hq-srv br-srv">
+      <div class="step-card" data-search="ssh sshd port 2024 maxauthtries banner allowusers permitrootlogin">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-SRV & BR-SRV — SSH</div>
+          <div class="step-title">HQ-SRV & BR-SRV — SSH (порт 2024)</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="note-box"><strong>Применяется на:</strong> HQ-SRV и BR-SRV</div>
-            <div class="code-block">
-              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-              <pre>apt-get install openssh-common
-vim /etc/openssh/sshd_config</pre>
-            </div>
-            <div class="code-block">
-              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-              <pre>Port 2024
+        <div class="step-body"><div class="step-body-inner">
+          <div class="note-box"><strong>Применяется на:</strong> HQ-SRV и BR-SRV</div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>apt-get install openssh-common
+vim /etc/openssh/sshd_config</pre></div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>Port 2024
 MaxAuthTries 2
 AllowUsers sshuser
 PermitRootLogin no
-Banner /root/banner</pre>
-            </div>
-            <div class="code-block">
-              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-              <pre>vim /root/banner
-<span class="string">Authorized access only</span>
-
+Banner /root/banner</pre></div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>vim /root/banner
+Authorized access only
 systemctl enable --now sshd
-systemctl restart sshd</pre>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-CLI (проверка)</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>ssh sshuser@<span class="addr">192.168.1.2</span> -p 2024
-ssh sshuser@<span class="addr">192.168.4.2</span> -p 2024</pre>
-              </div>
-            </div>
+systemctl restart sshd</pre></div>
+          <div class="device-block">
+            <div class="device-label">HQ-CLI (проверка)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>ssh sshuser@<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span> -p 2024
+ssh sshuser@<span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span> -p 2024</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
     </div>
   </section>
@@ -1790,207 +1187,152 @@ ssh sshuser@<span class="addr">192.168.4.2</span> -p 2024</pre>
     <div class="section-header">
       <span class="section-tag">// задание 12</span>
       <h2 class="section-title">Samba Domain Controller</h2>
-      <p class="section-desc">Настройка доменного контроллера на BR-SRV</p>
     </div>
     <div class="steps-container">
 
       <div class="step-card" data-search="samba domain controller br-srv provision au-team.irpo krb5 dc internal">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">BR-SRV — Установка и настройка Samba DC</div>
+          <div class="step-title">BR-SRV — Установка Samba DC</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/resolv.conf
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/resolv.conf
 nameserver 8.8.8.8
-
-apt-get update
-apt-get install task-samba-dc -y
-
+apt-get update && apt-get install task-samba-dc -y
 vim /etc/resolv.conf
-nameserver <span class="addr">192.168.1.2</span>
-
+nameserver <span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>
 rm -rf /etc/samba/smb.conf
-
 vim /etc/hosts
-<span class="addr">192.168.4.2</span>  br-srv.au-team.irpo</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-SRV — Добавить в dnsmasq</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/dnsmasq.conf
+<span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>  br-srv.au-team.irpo</pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">HQ-SRV — Добавить в dnsmasq</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/dnsmasq.conf
 <span class="comment"># Добавить:</span>
-server=/au-team.irpo/<span class="addr">192.168.4.2</span>
-
-systemctl restart dnsmasq</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">BR-SRV — Provision</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>samba-tool domain provision
-<span class="comment"># Ввести:</span>
+server=/au-team.irpo/<span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>
+systemctl restart dnsmasq</pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">BR-SRV — Provision</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>samba-tool domain provision
 <span class="comment"># Realm:        AU-TEAM.IRPO</span>
 <span class="comment"># Domain:       AU-TEAM</span>
 <span class="comment"># Server role:  dc</span>
 <span class="comment"># DNS backend:  SAMBA_INTERNAL</span>
-<span class="comment"># DNS forwarder: 192.168.1.2</span>
+<span class="comment"># DNS forwarder: </span><span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>
 
 mv -f /var/lib/samba/private/krb5.conf /etc/krb5.conf
-systemctl enable samba</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>export EDITOR=vim
+systemctl enable samba</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>export EDITOR=vim
 crontab -e
 <span class="comment"># Добавить:</span>
 @reboot /bin/systemctl restart network
 @reboot /bin/systemctl restart samba
 
 reboot
-
-samba-tool domain info 127.0.0.1</pre>
-              </div>
-            </div>
+samba-tool domain info 127.0.0.1</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="samba user add user1 user2 user3 user4 user5 hq group addmembers">
+      <div class="step-card" data-search="samba user add user1 user2 group hq addmembers">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">2</div>
-          <div class="step-title">BR-SRV — Создание пользователей и групп</div>
+          <div class="step-title">BR-SRV — Пользователи и группы</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>samba-tool user add user1.hq <span class="string">P@ssw0rd</span>
-samba-tool user add user2.hq <span class="string">P@ssw0rd</span>
-samba-tool user add user3.hq <span class="string">P@ssw0rd</span>
-samba-tool user add user4.hq <span class="string">P@ssw0rd</span>
-samba-tool user add user5.hq <span class="string">P@ssw0rd</span>
-
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>samba-tool user add user1.hq P@ssw0rd
+samba-tool user add user2.hq P@ssw0rd
+samba-tool user add user3.hq P@ssw0rd
+samba-tool user add user4.hq P@ssw0rd
+samba-tool user add user5.hq P@ssw0rd
 samba-tool group add hq
-
-samba-tool group addmembers hq user1.hq,user2.hq,user3.hq,user4.hq,user5.hq</pre>
-              </div>
-            </div>
+samba-tool group addmembers hq user1.hq,user2.hq,user3.hq,user4.hq,user5.hq</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="sudo samba schema apply prava_hq sudohost sudocommand cat sssd nsswitch">
+      <div class="step-card" data-search="sudo samba schema prava_hq sudohost sudocommand sssd nsswitch">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">3</div>
           <div class="step-title">BR-SRV — Sudo через Samba</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-repo add rpm http://altrepo.ru/local-p10 noarch local-p10
-apt-get update
-apt-get install sudo-samba-schema -y
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-repo add rpm http://altrepo.ru/local-p10 noarch local-p10
+apt-get update && apt-get install sudo-samba-schema -y
 sudo-schema-apply
-<span class="comment"># Ввод: yes → Administrator → P@ssw0rd → ok</span>
+<span class="comment"># yes → Administrator → P@ssw0rd → ok</span>
 
 create-sudo-rule
 <span class="comment"># Имя правила: prava_hq</span>
 <span class="comment"># sudoHost: ALL</span>
 <span class="comment"># sudoCommand: /bin/cat</span>
-<span class="comment"># sudoUser: %hq</span></pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-CLI — Настройка SSSD</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-get update
-apt-get install sudo libsss_sudo
+<span class="comment"># sudoUser: %hq</span></pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">HQ-CLI — SSSD + sudo</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-get install sudo libsss_sudo
 control sudo public
-
 vim /etc/sssd/sssd.conf
-<span class="comment"># Добавить:</span>
 services = nss, pam, sudo
 sudo_provider = ad
-
 vim /etc/nsswitch.conf
-<span class="comment"># Изменить:</span>
 sudoers: files sss
-
-reboot</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="comment"># После ребута (Ctrl+Alt+F1, под root):</span>
+reboot</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><span class="comment"># Ctrl+Alt+F1 (под root):</span>
 rm -rf /var/lib/sss/db/*
 sss_cache -E
 systemctl restart sssd
-
-<span class="comment"># Проверка (Ctrl+Alt+F2, под user1.hq):</span>
+<span class="comment"># Ctrl+Alt+F2 (под user1.hq):</span>
 sudo -l -U user1.hq
-sudo cat /etc/passwd | sudo grep root && sudo id root</pre>
-              </div>
-            </div>
+sudo cat /etc/passwd | sudo grep root && sudo id root</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="import users csv samba bash script Users.csv firstName lastName">
+      <div class="step-card" data-search="import users csv samba bash script">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">4</div>
-          <div class="step-title">BR-SRV — Массовый импорт пользователей</div>
+          <div class="step-title">BR-SRV — Массовый импорт пользователей из CSV</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>curl -L https://bit.ly/3C1nEYz > /root/users.zip
+        <div class="step-body"><div class="step-body-inner">
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>curl -L https://bit.ly/3C1nEYz > /root/users.zip
 unzip /root/users.zip
-mv /root/Users.csv /opt/Users.csv</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim import</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="comment">#!/bin/bash</span>
-csv_file=<span class="string">"/opt/Users.csv"</span>
-<span class="keyword">while</span> IFS=<span class="string">";"</span> read -r firstName lastName role phone ou street zip city country password; do
-    <span class="keyword">if</span> [ <span class="string">"$firstName"</span> == <span class="string">"First Name"</span> ]; then
-        <span class="keyword">continue</span>
+mv /root/Users.csv /opt/Users.csv</pre></div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>vim import</pre></div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>csv_file="/opt/Users.csv"
+while IFS=";" read -r firstName lastName role phone ou street zip city country password; do
+    if [ "$firstName" == "First Name" ]; then
+        continue
     fi
-    username=<span class="string">"${firstName,,}.${lastName,,}"</span>
-    sudo samba-tool user add <span class="string">"$username"</span> 123qweR%
-<span class="keyword">done</span> < <span class="string">"$csv_file"</span></pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>chmod +x /root/import
-bash /root/import</pre>
-              </div>
-            </div>
-          </div>
-        </div>
+    username="${firstName,,}.${lastName,,}"
+    sudo samba-tool user add "$username" 123qweR%
+done &lt; "$csv_file"</pre></div>
+          <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre>chmod +x /root/import
+bash /root/import</pre></div>
+        </div></div>
       </div>
 
     </div>
@@ -2003,83 +1345,51 @@ bash /root/import</pre>
     <div class="section-header">
       <span class="section-tag">// задание 13</span>
       <h2 class="section-title">RAID5 + NFS</h2>
-      <p class="section-desc">Файловое хранилище на программном RAID5</p>
     </div>
     <div class="steps-container">
-
-      <div class="step-card" data-search="raid5 mdadm md0 sdb sdc sdd ext4 fstab nfs exports hq-srv">
+      <div class="step-card" data-search="raid5 mdadm md0 sdb sdc sdd ext4 fstab nfs exports">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-SRV — Создание RAID5 и NFS</div>
+          <div class="step-title">HQ-SRV — Создание RAID5 и NFS-шары</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>lsblk
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>lsblk
 mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/sd[b-d]
 cat /proc/mdstat
-
-mdadm --detail -scan --verbose > /etc/mdadm.conf</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>fdisk /dev/md0
+mdadm --detail -scan --verbose > /etc/mdadm.conf
+fdisk /dev/md0
 <span class="comment"># n → Enter×3 → w</span>
-
 mkfs.ext4 /dev/md0p1
-
 vim /etc/fstab
-<span class="comment"># Добавить:</span>
 /dev/md0p1  /raid5  ext4  defaults  0  0
-
-mkdir /raid5
-mount -a</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-get update
-apt-get install nfs-server
-
+mkdir /raid5 && mount -a</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-get install nfs-server
 mkdir /raid5/nfs
 chown 99:99 /raid5/nfs
 chmod 777 /raid5/nfs
-
 vim /etc/exports
 <span class="comment"># Добавить:</span>
-/raid5/nfs <span class="addr">192.168.2.0/28</span>(rw,sync,no_subtree_check)
-
-exportfs -a
-exportfs -v
-
-systemctl enable nfs
-systemctl restart nfs</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-CLI — Монтирование NFS</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-get update
-apt-get install nfs-clients
-
+/raid5/nfs <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span><span class="dyn-ip" data-key="mask_vlan200">/28</span>(rw,sync,no_subtree_check)
+exportfs -a && exportfs -v
+systemctl enable nfs && systemctl restart nfs</pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">HQ-CLI — Монтирование NFS</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-get install nfs-clients
 mkdir -p /mnt/nfs
 vim /etc/fstab
-<span class="comment"># Добавить:</span>
-<span class="addr">192.168.1.2</span>:/raid5/nfs  /mnt/nfs  nfs  intr,soft,_netdev,x-systemd.automount 0 0
-
-mount -a
-mount -v
-touch /mnt/nfs/testfile</pre>
-              </div>
-            </div>
+<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>:/raid5/nfs  /mnt/nfs  nfs  intr,soft,_netdev,x-systemd.automount 0 0
+mount -a && mount -v
+touch /mnt/nfs/testfile</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
-
     </div>
   </section>
 
@@ -2089,78 +1399,63 @@ touch /mnt/nfs/testfile</pre>
   <section id="chrony" class="content-section reveal">
     <div class="section-header">
       <span class="section-tag">// задание 14</span>
-      <h2 class="section-title">Настройка Chrony / NTP</h2>
-      <p class="section-desc">HQ-RTR как NTP-сервер, клиенты через systemd-timesyncd</p>
+      <h2 class="section-title">Chrony / NTP</h2>
     </div>
     <div class="steps-container">
 
-      <div class="step-card" data-search="chrony ntp hq-rtr stratum allow local chrony.conf">
+      <div class="step-card" data-search="chrony ntp hq-rtr stratum allow">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-RTR — NTP сервер (Chrony)</div>
+          <div class="step-title">HQ-RTR — NTP-сервер</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt update
-apt install chrony -y
-
-nano /etc/chrony/chrony.conf
-<span class="comment"># Добавить/изменить:</span>
-local stratum 5
-allow <span class="addr">192.168.1.0/26</span>
-allow <span class="addr">192.168.2.0/28</span>
-allow <span class="addr">172.16.5.0/28</span>
-allow <span class="addr">192.168.4.0/27</span>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt update && apt install chrony -y
+nano /etc/chrony/chrony.conf</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>local stratum 5
+allow <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span><span class="dyn-ip" data-key="mask_vlan100">/26</span>
+allow <span class="dyn-ip" data-key="ip_hqrtr_vlan200">192.168.2.1</span><span class="dyn-ip" data-key="mask_vlan200">/28</span>
+allow <span class="dyn-ip" data-key="ip_brrtr_isp">172.16.5.2</span><span class="dyn-ip" data-key="mask_isp_br">/28</span>
+allow <span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span><span class="dyn-ip" data-key="mask_brnet">/27</span>
 <span class="comment">#pool 2.debian</span>
 <span class="comment">#rtcsync</span>
 
 systemctl enable --now chrony
 systemctl restart chrony
-timedatectl set-ntp 0</pre>
-              </div>
-            </div>
+timedatectl set-ntp 0</pre></div>
           </div>
-        </div>
+        </div></div>
       </div>
 
-      <div class="step-card" data-search="timesyncd ntp hq-cli hq-srv br-srv br-rtr 192.168.1.1 172.16.4.2">
+      <div class="step-card" data-search="timesyncd ntp hq-cli hq-srv br-srv br-rtr">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">2</div>
           <div class="step-title">Клиенты — systemd-timesyncd</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-CLI / HQ-SRV / BR-SRV → NTP=192.168.1.1</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>systemctl disable --now chronyd
-apt-get update
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-CLI / HQ-SRV / BR-SRV → NTP = HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>systemctl disable --now chronyd
 apt-get install systemd-timesyncd -y
 vim /etc/systemd/timesyncd.conf
-<span class="comment"># Раскомментировать и изменить:</span>
-NTP=<span class="addr">192.168.1.1</span>
+NTP=<span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span>
 systemctl enable --now systemd-timesyncd
-timedatectl timesync-status</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">BR-RTR → NTP=172.16.4.2</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>nano /etc/systemd/timesyncd.conf
-NTP=<span class="addr">172.16.4.2</span>
-systemctl enable --now systemd-timesyncd</pre>
-              </div>
-            </div>
+timedatectl timesync-status</pre></div>
           </div>
-        </div>
+          <div class="device-block">
+            <div class="device-label">BR-RTR → NTP = HQ-RTR (через ISP-HQ)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>nano /etc/systemd/timesyncd.conf
+NTP=<span class="dyn-ip" data-key="ip_hqrtr_isp">172.16.4.2</span>
+systemctl enable --now systemd-timesyncd</pre></div>
+          </div>
+        </div></div>
       </div>
 
     </div>
@@ -2173,86 +1468,59 @@ systemctl enable --now systemd-timesyncd</pre>
     <div class="section-header">
       <span class="section-tag">// задание 15</span>
       <h2 class="section-title">Ansible</h2>
-      <p class="section-desc">Конфигурация управления узлами с BR-SRV</p>
     </div>
     <div class="steps-container">
-
-      <div class="step-card" data-search="ansible hosts inventory br-srv hq-srv hq-cli hq-rtr br-rtr ssh-keygen ssh-copy-id ping">
+      <div class="step-card" data-search="ansible hosts inventory br-srv hq-srv hq-cli hq-rtr br-rtr ssh-keygen ping">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
           <div class="step-title">BR-SRV — Установка и настройка Ansible</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-repo rm rpm http://altrepo.ru/local-p10
-apt-get update
-apt-get install ansible</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/ansible/hosts</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>hq-srv ansible_host=sshuser@<span class="addr">192.168.1.2</span> ansible_port=2024
-hq-cli ansible_host=sshuser@<span class="addr">192.168.2.11</span> ansible_port=2024
-hq-rtr ansible_host=net_admin@<span class="addr">192.168.1.1</span> ansible_port=22
-br-rtr ansible_host=net_admin@<span class="addr">192.168.4.1</span> ansible_port=22</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /etc/ansible/ansible.cfg
-<span class="comment"># Добавить:</span>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-repo rm rpm http://altrepo.ru/local-p10
+apt-get update && apt-get install ansible</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/ansible/hosts</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>hq-srv ansible_host=sshuser@<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span> ansible_port=2024
+hq-cli ansible_host=sshuser@<span class="dyn-ip" data-key="ip_hqcli">192.168.2.11</span> ansible_port=2024
+hq-rtr ansible_host=net_admin@<span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span> ansible_port=22
+br-rtr ansible_host=net_admin@<span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span> ansible_port=22</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /etc/ansible/ansible.cfg
 interpreter_python=auto_silent
-ansible_python_interpreter=/usr/bin/python3</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">Настройка SSH на RTR (HQ-RTR & BR-RTR)</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-get install ssh-server -y
-nano /etc/ssh/sshd_config</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>Port 22
+ansible_python_interpreter=/usr/bin/python3</pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">SSH на RTR (HQ-RTR и BR-RTR)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-get install ssh-server -y
+nano /etc/ssh/sshd_config
+Port 22
 MaxAuthTries 2
 AllowUsers net_admin
 PermitRootLogin no
-Banner /root/banner</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>nano /root/banner
-<span class="string">Authorized access only</span>
-
-systemctl restart sshd
-systemctl enable --now sshd</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">BR-SRV — SSH-ключи и проверка</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>ssh-keygen -t rsa
-ssh-copy-id -p 22 net_admin@<span class="addr">192.168.4.1</span>
-ssh-copy-id -p 2024 sshuser@<span class="addr">192.168.2.11</span>
-ssh-copy-id -p 2024 sshuser@<span class="addr">192.168.1.2</span>
-ssh-copy-id -p 22 net_admin@<span class="addr">192.168.1.1</span>
-
-ansible all -m ping</pre>
-              </div>
-            </div>
+Banner /root/banner
+nano /root/banner
+Authorized access only
+systemctl restart sshd && systemctl enable --now sshd</pre></div>
           </div>
-        </div>
-      </div>
+          <div class="device-block">
+            <div class="device-label">BR-SRV — SSH-ключи</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>ssh-keygen -t rsa
+ssh-copy-id -p 22 net_admin@<span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span>
+ssh-copy-id -p 2024 sshuser@<span class="dyn-ip" data-key="ip_hqcli">192.168.2.11</span>
+ssh-copy-id -p 2024 sshuser@<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>
+ssh-copy-id -p 22 net_admin@<span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span>
 
+ansible all -m ping</pre></div>
+          </div>
+        </div></div>
+      </div>
     </div>
   </section>
 
@@ -2263,44 +1531,36 @@ ansible all -m ping</pre>
     <div class="section-header">
       <span class="section-tag">// задание 16</span>
       <h2 class="section-title">Docker + MediaWiki</h2>
-      <p class="section-desc">Развёртывание wiki через Docker Compose на BR-SRV</p>
     </div>
     <div class="steps-container">
-
-      <div class="step-card" data-search="docker compose mediawiki mariadb wiki.yml 8080 br-srv pull image">
+      <div class="step-card" data-search="docker compose mediawiki mariadb wiki.yml 8080 br-srv pull">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">BR-SRV — Docker + MediaWiki</div>
+          <div class="step-title">BR-SRV — Docker Compose + MediaWiki</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-get update
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-get update
 apt-get install docker-engine docker-compose
 systemctl enable --now docker
 docker pull mediawiki
-docker pull mariadb</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>vim /root/wiki.yml</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="keyword">services</span>:
+docker pull mariadb</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>vim /root/wiki.yml</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>services:
   mariadb:
     image: mariadb
     container_name: mariadb
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: <span class="string">P@ssw0rd</span>
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
       MYSQL_DATABASE: mediawiki
       MYSQL_USER: wiki
-      MYSQL_PASSWORD: <span class="string">P@ssw0rd</span>
+      MYSQL_PASSWORD: P@ssw0rd
     volumes: [ mariadb_data:/var/lib/mysql ]
   wiki:
     image: mediawiki
@@ -2309,40 +1569,31 @@ docker pull mariadb</pre>
     environment:
       MEDIAWIKI_DB_HOST: mariadb
       MEDIAWIKI_DB_USER: wiki
-      MEDIAWIKI_DB_PASSWORD: <span class="string">P@ssw0rd</span>
+      MEDIAWIKI_DB_PASSWORD: P@ssw0rd
       MEDIAWIKI_DB_NAME: mediawiki
     ports:
-      - <span class="string">"8080:80"</span>
-<span class="keyword">volumes</span>:
-  mariadb_data:</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>docker compose -f /root/wiki.yml up -d</pre>
-              </div>
-            </div>
-            <div class="note-box">
-              <strong>Настройка через браузер (HQ-CLI):</strong> открыть <strong>192.168.4.2:8080</strong><br>
-              Хост БД: <strong>mariadb</strong> | БД: <strong>mediawiki</strong> | Пользователь: <strong>wiki</strong> | Пароль: <strong>P@ssw0rd</strong><br>
-              Участник: <strong>wiki</strong> | Пароль: <strong>WikiP@ssw0rd</strong>
-            </div>
-            <div class="device-block">
-              <div class="device-label">BR-SRV — После настройки</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>mkdir /root/mediawiki
-mv /home/sshuser/LocalSettings.php /root/mediawiki/
-
-<span class="comment"># В wiki.yml раскомментировать volumes у wiki:</span>
-<span class="comment"># volumes: [ /root/mediawiki/LocalSettings.php:/var/www/html/LocalSettings.php ]</span>
-
-docker compose -f /root/wiki.yml up -d</pre>
-              </div>
-            </div>
+      - "8080:80"
+    #volumes: [ /root/mediawiki/LocalSettings.php:/var/www/html/LocalSettings.php ]
+volumes:
+  mariadb_data:</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>docker compose -f /root/wiki.yml up -d</pre></div>
           </div>
-        </div>
+          <div class="note-box">
+            <strong>Настройка (HQ-CLI браузер):</strong> открыть <strong><span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>:8080</strong><br>
+            Хост БД: <strong>mariadb</strong> | БД: <strong>mediawiki</strong> | Пользователь: <strong>wiki</strong> | Пароль: <strong>P@ssw0rd</strong><br>
+            Участник: <strong>wiki</strong> | Пароль: <strong>WikiP@ssw0rd</strong>
+          </div>
+          <div class="device-block">
+            <div class="device-label">BR-SRV — После настройки (LocalSettings.php)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>mkdir /root/mediawiki
+mv /home/sshuser/LocalSettings.php /root/mediawiki/
+<span class="comment"># Раскомментировать в wiki.yml volumes у wiki</span>
+docker compose -f /root/wiki.yml up -d</pre></div>
+          </div>
+        </div></div>
       </div>
-
     </div>
   </section>
 
@@ -2353,46 +1604,35 @@ docker compose -f /root/wiki.yml up -d</pre>
     <div class="section-header">
       <span class="section-tag">// задание 17</span>
       <h2 class="section-title">Статическая трансляция портов</h2>
-      <p class="section-desc">DNAT правила для проброса портов</p>
     </div>
     <div class="steps-container">
-
-      <div class="step-card" data-search="dnat prerouting port 80 2024 iptables br-rtr 192.168.4.1 192.168.4.2">
+      <div class="step-card" data-search="dnat prerouting port 80 2024 iptables br-rtr hq-rtr">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">BR-RTR — Port Forwarding</div>
+          <div class="step-title">BR-RTR & HQ-RTR — DNAT Port Forwarding</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">BR-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>iptables -t nat -A PREROUTING -p tcp -d <span class="addr">192.168.4.1</span> --dport 80 -j DNAT --to-destination <span class="addr">192.168.4.2</span>:8080
-iptables -t nat -A PREROUTING -p tcp -d <span class="addr">192.168.4.1</span> --dport 2024 -j DNAT --to-destination <span class="addr">192.168.4.2</span>:2024
-iptables-save > /root/rules</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>iptables -t nat -A PREROUTING -p tcp -d <span class="addr">192.168.1.1</span> --dport 2024 -j DNAT --to-destination <span class="addr">192.168.1.2</span>:2024
-iptables-save > /root/rules</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-CLI (проверка)</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>ssh -p 2024 sshuser@<span class="addr">192.168.4.1</span></pre>
-              </div>
-            </div>
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">BR-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>iptables -t nat -A PREROUTING -p tcp -d <span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span> --dport 80 -j DNAT --to-destination <span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>:8080
+iptables -t nat -A PREROUTING -p tcp -d <span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span> --dport 2024 -j DNAT --to-destination <span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>:2024
+iptables-save > /root/rules</pre></div>
           </div>
-        </div>
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>iptables -t nat -A PREROUTING -p tcp -d <span class="dyn-ip" data-key="ip_hqrtr_vlan100">192.168.1.1</span> --dport 2024 -j DNAT --to-destination <span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>:2024
+iptables-save > /root/rules</pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">HQ-CLI (проверка)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>ssh -p 2024 sshuser@<span class="dyn-ip" data-key="ip_brrtr_lan">192.168.4.1</span></pre></div>
+          </div>
+        </div></div>
       </div>
-
     </div>
   </section>
 
@@ -2403,73 +1643,55 @@ iptables-save > /root/rules</pre>
     <div class="section-header">
       <span class="section-tag">// задание 18</span>
       <h2 class="section-title">Moodle LMS</h2>
-      <p class="section-desc">Развёртывание образовательной платформы Moodle на HQ-SRV</p>
     </div>
     <div class="steps-container">
-
-      <div class="step-card" data-search="moodle apache php8.2 mariadb mysql hq-srv install.php database">
+      <div class="step-card" data-search="moodle apache php8.2 mariadb mysql hq-srv install database">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-SRV — Установка Moodle</div>
+          <div class="step-title">HQ-SRV — Установка Moodle 4.5</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-SRV</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt-get update
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-SRV</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt-get update
 apt-get install apache2 php8.2 apache2-mod_php8.2 mariadb-server \
   php8.2-opcache php8.2-curl php8.2-gd php8.2-intl php8.2-mysqli \
   php8.2-xml php8.2-xmlrpc php8.2-ldap php8.2-zip php8.2-soap \
   php8.2-mbstring php8.2-json php8.2-xmlreader php8.2-fileinfo \
   php8.2-sodium
-
-systemctl enable --now httpd2 mysqld</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>mysql_secure_installation
+systemctl enable --now httpd2 mysqld</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>mysql_secure_installation
 <span class="comment"># Enter → Y → P@ssw0rd → Y для всех</span>
-
 mariadb -u root -p
 CREATE DATABASE moodledb;
-CREATE USER moodle IDENTIFIED BY <span class="string">'P@ssw0rd'</span>;
+CREATE USER moodle IDENTIFIED BY 'P@ssw0rd';
 GRANT ALL PRIVILEGES ON moodledb.* TO moodle;
 FLUSH PRIVILEGES;
-exit</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>curl -L https://github.com/moodle/moodle/archive/refs/tags/v4.5.0.zip > /root/moodle.zip
+exit</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>curl -L https://github.com/moodle/moodle/archive/refs/tags/v4.5.0.zip > /root/moodle.zip
 unzip /root/moodle.zip -d /var/www/html
 mv /var/www/html/moodle-4.5.0/* /var/www/html/
-
 mkdir /var/www/moodledata
 chown apache2:apache2 /var/www/html
-chown apache2:apache2 /var/www/moodledata</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>mcedit /etc/php/8.2/apache2-mod_php/php.ini
-<span class="comment"># F7 → найти max_input_vars → изменить:</span>
+chown apache2:apache2 /var/www/moodledata</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>mcedit /etc/php/8.2/apache2-mod_php/php.ini
+<span class="comment"># F7 → max_input_vars → изменить:</span>
 max_input_vars = 5000
-
-cd /var/www/html
-rm index.html
-systemctl restart httpd2</pre>
-              </div>
-            </div>
-            <div class="note-box">
-              <strong>Настройка через браузер (HQ-CLI):</strong> открыть <strong>http://192.168.1.2/install.php</strong><br>
-              БД: <strong>moodledb</strong> | Пользователь: <strong>moodle</strong> | Пароль: <strong>P@ssw0rd</strong><br>
-              Логин: <strong>admin</strong> | Пароль: <strong>P@ssw0rd</strong>
-            </div>
+cd /var/www/html && rm index.html
+systemctl restart httpd2</pre></div>
           </div>
-        </div>
+          <div class="note-box">
+            <strong>HQ-CLI браузер:</strong> открыть <strong>http://<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>/install.php</strong><br>
+            БД: <strong>moodledb</strong> | Пользователь: <strong>moodle</strong> | Пароль: <strong>P@ssw0rd</strong><br>
+            Логин: <strong>admin</strong> | Пароль: <strong>P@ssw0rd</strong>
+          </div>
+        </div></div>
       </div>
-
     </div>
   </section>
 
@@ -2479,301 +1701,194 @@ systemctl restart httpd2</pre>
   <section id="proxy" class="content-section reveal">
     <div class="section-header">
       <span class="section-tag">// задание 19</span>
-      <h2 class="section-title">Обратный прокси-сервер</h2>
-      <p class="section-desc">Nginx на HQ-RTR для moodle.au-team.irpo и wiki.au-team.irpo</p>
+      <h2 class="section-title">Обратный прокси Nginx</h2>
     </div>
     <div class="steps-container">
-
-      <div class="step-card" data-search="nginx proxy reverse moodle wiki hq-rtr server_name proxy_pass 80">
+      <div class="step-card" data-search="nginx proxy reverse moodle wiki hq-rtr server_name proxy_pass">
         <div class="step-header" onclick="toggleStep(this)">
           <div class="step-num">1</div>
-          <div class="step-title">HQ-RTR — Nginx Reverse Proxy</div>
+          <div class="step-title">HQ-RTR — Nginx для moodle и wiki</div>
           <div class="step-toggle">▼</div>
         </div>
-        <div class="step-body">
-          <div class="step-body-inner">
-            <div class="device-block">
-              <div class="device-label">HQ-SRV — Обновить config.php Moodle</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>mcedit /var/www/html/config.php
-<span class="comment"># Изменить:</span>
-$CFG->wwwroot = <span class="string">'http://moodle.au-team.irpo'</span>;</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-RTR</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>apt install nginx -y
-nano /etc/nginx/sites-available/proxy</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="keyword">server</span> {
+        <div class="step-body"><div class="step-body-inner">
+          <div class="device-block">
+            <div class="device-label">HQ-SRV — Обновить config.php</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>mcedit /var/www/html/config.php
+$CFG->wwwroot = 'http://moodle.au-team.irpo';</pre></div>
+          </div>
+          <div class="device-block">
+            <div class="device-label">HQ-RTR</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>apt install nginx -y
+nano /etc/nginx/sites-available/proxy</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>server {
   listen 80;
   server_name moodle.au-team.irpo;
   location / {
-    proxy_pass http://<span class="addr">192.168.1.2</span>:80;
+    proxy_pass http://<span class="dyn-ip" data-key="ip_hqsrv">192.168.1.2</span>:80;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $remote_addr;
   }
 }
 
-<span class="keyword">server</span> {
+server {
   listen 80;
   server_name wiki.au-team.irpo;
   location / {
-    proxy_pass http://<span class="addr">192.168.4.2</span>:8080;
+    proxy_pass http://<span class="dyn-ip" data-key="ip_brsrv">192.168.4.2</span>:8080;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $remote_addr;
   }
-}</pre>
-              </div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre>rm -rf /etc/nginx/sites-available/default
+}</pre></div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre>rm -rf /etc/nginx/sites-available/default
 rm -rf /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/proxy /etc/nginx/sites-enabled
 ls -la /etc/nginx/sites-enabled
-systemctl restart nginx</pre>
-              </div>
-            </div>
-            <div class="device-block">
-              <div class="device-label">HQ-CLI (проверка)</div>
-              <div class="code-block">
-                <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-                <pre><span class="comment"># В браузере открыть:</span>
-moodle.au-team.irpo
-wiki.au-team.irpo</pre>
-              </div>
-            </div>
+systemctl restart nginx</pre></div>
           </div>
-        </div>
+          <div class="device-block">
+            <div class="device-label">HQ-CLI (проверка)</div>
+            <div class="code-block"><div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><span class="comment"># Открыть в браузере:</span>
+moodle.au-team.irpo
+wiki.au-team.irpo</pre></div>
+          </div>
+        </div></div>
       </div>
-
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- FOOTER -->
   <footer>
-    <p style="color:var(--text2); margin-bottom:8px;">Данный проект <strong style="color:#ff6688;">никак не связан</strong> с @Rexilone</p>
-    <p>&gt; au-team.irpo · Методическое пособие · Сетевая инфраструктура</p>
+    <p style="color:#ff6688;margin-bottom:10px;">⚠ Данный проект <strong>никак не связан</strong> с @Rexilone ⚠</p>
+    <p style="color:var(--text2);">&gt; au-team.irpo · Методическое пособие · Сетевая инфраструктура v2.0</p>
   </footer>
 
-</div><!-- /wrapper -->
+</div>
 
 <script>
-// ===== CURSOR =====
+// ========== CURSOR ==========
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
-let mouseX = 0, mouseY = 0;
-let ringX = 0, ringY = 0;
-const trails = [];
-const TRAIL_COUNT = 12;
+let mouseX=0,mouseY=0,ringX=0,ringY=0;
+const trails=[];
+for(let i=0;i<14;i++){const t=document.createElement('div');t.className='cursor-trail';document.body.appendChild(t);trails.push({el:t,x:0,y:0});}
+document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;cursor.style.left=mouseX+'px';cursor.style.top=mouseY+'px';});
+(function animCursor(){ringX+=(mouseX-ringX)*0.12;ringY+=(mouseY-ringY)*0.12;ring.style.left=ringX+'px';ring.style.top=ringY+'px';for(let i=trails.length-1;i>0;i--){trails[i].x+=(trails[i-1].x-trails[i].x)*0.3;trails[i].y+=(trails[i-1].y-trails[i].y)*0.3;trails[i].el.style.left=trails[i].x+'px';trails[i].el.style.top=trails[i].y+'px';trails[i].el.style.opacity=(1-i/trails.length)*0.45;trails[i].el.style.transform=`translate(-50%,-50%) scale(${1-i/trails.length})`;}trails[0].x+=(mouseX-trails[0].x)*0.5;trails[0].y+=(mouseY-trails[0].y)*0.5;trails[0].el.style.left=trails[0].x+'px';trails[0].el.style.top=trails[0].y+'px';trails[0].el.style.opacity=0.5;requestAnimationFrame(animCursor);})();
 
-for (let i = 0; i < TRAIL_COUNT; i++) {
-  const t = document.createElement('div');
-  t.className = 'cursor-trail';
-  document.body.appendChild(t);
-  trails.push({ el: t, x: 0, y: 0 });
+// ========== CANVAS BG ==========
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+class Particle{constructor(){this.reset();}reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.size=Math.random()*1.5+0.3;this.sx=(Math.random()-0.5)*0.35;this.sy=(Math.random()-0.5)*0.35;this.op=Math.random()*0.5+0.1;const r=Math.random();this.color=r>0.7?'#00aaff':r>0.4?'#00ff88':'#ff00aa';}update(){this.x+=this.sx;this.y+=this.sy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}draw(){ctx.save();ctx.globalAlpha=this.op;ctx.fillStyle=this.color;ctx.shadowBlur=6;ctx.shadowColor=this.color;ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();ctx.restore();}}
+const particles=[];for(let i=0;i<160;i++)particles.push(new Particle());
+let bgA=0;
+(function animBg(){ctx.clearRect(0,0,W,H);const cx=W/2+Math.cos(bgA)*200,cy=H/2+Math.sin(bgA)*100;const g=ctx.createRadialGradient(cx,cy,0,cx,cy,500);g.addColorStop(0,'rgba(0,255,136,0.018)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);bgA+=0.003;particles.forEach(p=>{p.update();p.draw();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<90){ctx.save();ctx.globalAlpha=(1-d/90)*0.07;ctx.strokeStyle='#00ff88';ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();ctx.restore();}}requestAnimationFrame(animBg);})();
+
+// ========== PROGRESS BAR ==========
+const pb=document.getElementById('progress-bar');
+window.addEventListener('scroll',()=>{const st=window.scrollY,dh=document.documentElement.scrollHeight-window.innerHeight;pb.style.width=(st/dh*100)+'%';});
+
+// ========== TOGGLE ==========
+function toggleStep(h){h.parentElement.classList.toggle('open');}
+
+// ========== COPY ==========
+function copyCode(btn){
+  const pre=btn.closest('.code-block').querySelector('pre');
+  // Берём текст без HTML-тегов
+  const tmp=document.createElement('div');
+  tmp.innerHTML=pre.innerHTML;
+  const text=tmp.innerText||tmp.textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig=btn.innerText;btn.innerText='✓ copied';btn.classList.add('copied');
+    setTimeout(()=>{btn.innerText=orig;btn.classList.remove('copied');},2000);
+  });
 }
 
-document.addEventListener('mousemove', e => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  cursor.style.left = mouseX + 'px';
-  cursor.style.top = mouseY + 'px';
+// ========== SCROLL REVEAL ==========
+const revEls=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.08});
+revEls.forEach(el=>obs.observe(el));
+
+// ========== SEARCH ==========
+function filterSteps(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.step-card').forEach(card=>{
+    const d=(card.dataset.search||'')+' '+(card.querySelector('.step-title')?.innerText||'');
+    const show=q===''||d.toLowerCase().includes(q);
+    card.style.display=show?'':'none';
+    if(show&&q!=='')card.classList.add('open');
+  });
+}
+
+// ========== CURSOR HOVER ==========
+document.querySelectorAll('.btn,.copy-btn,.apply-btn,.reset-btn,.step-header,.nav-links a,.topo-card,.ip-device-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2)';ring.style.transform='translate(-50%,-50%) scale(1.5)';ring.style.borderColor='rgba(0,255,136,0.9)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(0,255,136,0.5)';});
 });
 
-function animateCursor() {
-  ringX += (mouseX - ringX) * 0.12;
-  ringY += (mouseY - ringY) * 0.12;
-  ring.style.left = ringX + 'px';
-  ring.style.top = ringY + 'px';
+// ========== IP CONFIGURATOR ==========
+const DEFAULTS = {
+  ip_isp_hq:'172.16.4.1', mask_isp_hq:'/28',
+  ip_isp_br:'172.16.5.1', mask_isp_br:'/28',
+  ip_hqrtr_isp:'172.16.4.2',
+  ip_hqrtr_vlan100:'192.168.1.1', mask_vlan100:'/26',
+  ip_hqrtr_vlan200:'192.168.2.1', mask_vlan200:'/28',
+  ip_hqrtr_vlan999:'192.168.3.1', mask_vlan999:'/29',
+  ip_brrtr_isp:'172.16.5.2',
+  ip_brrtr_lan:'192.168.4.1', mask_brnet:'/27',
+  ip_hqsrv:'192.168.1.2',
+  ip_hqcli:'192.168.2.11',
+  ip_brsrv:'192.168.4.2',
+  ip_gre_hq:'10.10.10.1',
+  ip_gre_br:'10.10.10.2', mask_gre:'/30',
+  ip_dhcp_start:'192.168.2.2',
+  ip_dhcp_end:'192.168.2.14'
+};
 
-  for (let i = trails.length - 1; i > 0; i--) {
-    trails[i].x += (trails[i - 1].x - trails[i].x) * 0.3;
-    trails[i].y += (trails[i - 1].y - trails[i].y) * 0.3;
-    trails[i].el.style.left = trails[i].x + 'px';
-    trails[i].el.style.top = trails[i].y + 'px';
-    trails[i].el.style.opacity = (1 - i / trails.length) * 0.5;
-    const scale = 1 - i / trails.length;
-    trails[i].el.style.transform = `translate(-50%,-50%) scale(${scale})`;
-  }
-  trails[0].x += (mouseX - trails[0].x) * 0.5;
-  trails[0].y += (mouseY - trails[0].y) * 0.5;
-  trails[0].el.style.left = trails[0].x + 'px';
-  trails[0].el.style.top = trails[0].y + 'px';
-  trails[0].el.style.opacity = 0.5;
-
-  requestAnimationFrame(animateCursor);
-}
-animateCursor();
-
-// ===== CANVAS BACKGROUND =====
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-let W, H;
-let particles = [];
-
-function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * W;
-    this.y = Math.random() * H;
-    this.size = Math.random() * 1.5 + 0.3;
-    this.speedX = (Math.random() - 0.5) * 0.4;
-    this.speedY = (Math.random() - 0.5) * 0.4;
-    this.opacity = Math.random() * 0.5 + 0.1;
-    this.color = Math.random() > 0.7 ? '#00aaff' : (Math.random() > 0.5 ? '#00ff88' : '#ff00aa');
-  }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
-  }
-  draw() {
-    ctx.save();
-    ctx.globalAlpha = this.opacity;
-    ctx.fillStyle = this.color;
-    ctx.shadowBlur = 6;
-    ctx.shadowColor = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-}
-
-for (let i = 0; i < 150; i++) particles.push(new Particle());
-
-function drawConnections() {
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 100) {
-        ctx.save();
-        ctx.globalAlpha = (1 - dist / 100) * 0.08;
-        ctx.strokeStyle = '#00ff88';
-        ctx.lineWidth = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
-  }
-}
-
-let bgAngle = 0;
-function animateBg() {
-  ctx.clearRect(0, 0, W, H);
-
-  // Subtle gradient overlay
-  const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H));
-  grad.addColorStop(0, 'rgba(0,30,10,0.04)');
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-
-  // Slow rotating glow
-  const cx = W/2 + Math.cos(bgAngle) * 200;
-  const cy = H/2 + Math.sin(bgAngle) * 100;
-  const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 500);
-  glow.addColorStop(0, 'rgba(0,255,136,0.02)');
-  glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, W, H);
-
-  bgAngle += 0.003;
-
-  particles.forEach(p => { p.update(); p.draw(); });
-  drawConnections();
-  requestAnimationFrame(animateBg);
-}
-animateBg();
-
-// ===== PROGRESS BAR =====
-const progressBar = document.getElementById('progress-bar');
-window.addEventListener('scroll', () => {
-  const scrollTop = window.scrollY;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = (scrollTop / docHeight) * 100;
-  progressBar.style.width = progress + '%';
-});
-
-// ===== TOGGLE STEPS =====
-function toggleStep(header) {
-  const card = header.parentElement;
-  card.classList.toggle('open');
-}
-
-// ===== COPY CODE =====
-function copyCode(btn) {
-  const pre = btn.closest('.code-block').querySelector('pre');
-  const text = pre.innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    const orig = btn.innerText;
-    btn.innerText = '✓ copied';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.innerText = orig;
-      btn.classList.remove('copied');
-    }, 2000);
+function applyIPs(){
+  const vals={};
+  Object.keys(DEFAULTS).forEach(k=>{
+    const el=document.getElementById(k);
+    vals[k]=el&&el.value.trim()!==''?el.value.trim():DEFAULTS[k];
   });
-}
-
-// ===== SCROLL REVEAL =====
-const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
+  // Обновляем все .dyn-ip
+  document.querySelectorAll('.dyn-ip[data-key]').forEach(span=>{
+    const key=span.dataset.key;
+    if(vals[key]!==undefined){
+      span.textContent=vals[key];
+      span.classList.add('updated');
+      setTimeout(()=>span.classList.remove('updated'),1500);
     }
   });
-}, { threshold: 0.1 });
-revealEls.forEach(el => observer.observe(el));
-
-// ===== SEARCH =====
-function filterSteps() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  document.querySelectorAll('.step-card').forEach(card => {
-    const searchData = (card.dataset.search || '') + ' ' + (card.querySelector('.step-title')?.innerText || '');
-    const match = q === '' || searchData.toLowerCase().includes(q);
-    card.style.display = match ? '' : 'none';
-    if (match && q !== '') {
-      card.classList.add('open');
-    }
-  });
+  // Показываем статус
+  const msg=document.getElementById('statusMsg');
+  msg.classList.add('show');
+  setTimeout(()=>msg.classList.remove('show'),3000);
 }
 
-// ===== CURSOR HOVER EFFECT =====
-document.querySelectorAll('.btn, .copy-btn, .step-header, .nav-links a, .topo-card').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursor.style.transform = 'translate(-50%,-50%) scale(2)';
-    ring.style.transform = 'translate(-50%,-50%) scale(1.5)';
-    ring.style.borderColor = 'rgba(0,255,136,0.8)';
+function resetIPs(){
+  Object.keys(DEFAULTS).forEach(k=>{
+    const el=document.getElementById(k);
+    if(el)el.value=DEFAULTS[k];
   });
-  el.addEventListener('mouseleave', () => {
-    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
-    ring.style.transform = 'translate(-50%,-50%) scale(1)';
-    ring.style.borderColor = 'rgba(0,255,136,0.5)';
-  });
+  applyIPs();
+}
+
+// Применяем при загрузке
+window.addEventListener('load',()=>applyIPs());
+
+// Enter в полях = применить
+document.querySelectorAll('.ip-field input').forEach(inp=>{
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')applyIPs();});
+  inp.addEventListener('change',()=>applyIPs());
 });
 </script>
 </body>
